@@ -4,7 +4,7 @@ import util
 class FDWHandler(util.CustomRequestHandler):
 
 	def _generate_connection(self):
-		target_server = self.get_argument("host", "target_server", True)
+		target_server = self.get_argument("server-name", "target_server", True)
 		target_host = self.get_argument("host", "localhost", True)
 		target_db = self.get_argument("db_type", "PostgreSQL", True)
 		target_port = self.get_argument("port", 5432, True)
@@ -13,7 +13,6 @@ class FDWHandler(util.CustomRequestHandler):
 		
 		if target_db == "MySQL":
 			target_fdw = "mysql_fdw"
-			target_port = 3306
 
 		sql_output  = """CREATE SERVER {}
 FOREIGN DATA WRAPPER {}
