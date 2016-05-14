@@ -7,10 +7,12 @@ PGConfig API documentation.
 ### 1.1 Foreign Data Wrappers
 
 
+````
 ```eval_rst
 .. autoclass:: recommonmark.transform.AutoStructify
     :show-inheritance:
 ```
+````
 
 /fdw/generate-connection
 : | Parameter |  Default Value | Mandatory |
