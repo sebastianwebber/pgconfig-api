@@ -2,8 +2,34 @@ import tornado.web
 import util
 
 class FDWHandler(util.CustomRequestHandler):
+	"""Foreign Data Wrapper Generator"""
 
-	def _generate_connection(self):
+	def generate_connection(self):
+		"""
+		**Generate the FDW connection**
+
+
+		Returns
+			SQL command with the ``CREATE SERVER`` statement
+		Sample URL
+			::
+
+				/fdw/generate-connection?server-name=dev_server&host=128.3.0.100&db_type=MySQL&port=3306&format=sql
+		::
+
+		Sample output
+			::
+
+				CREATE SERVER dev_server FOREIGN DATA WRAPPER mysql_fdw OPTIONS (host '128.3.0.100', port '3306');
+			::
+
+		:param server-name: FDW Server Name
+		:param host: Remote server address (IP or DNS name)
+		:param db_type: Database Type Name (eg. PostgreSQL, MySQL, etc)
+		:param port: Remote server port address
+
+		"""
+
 		target_server = self.get_argument("server-name", "target_server", True)
 		target_host = self.get_argument("host", "localhost", True)
 		target_db = self.get_argument("db_type", "PostgreSQL", True)
