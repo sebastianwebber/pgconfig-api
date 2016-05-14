@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 alabaster==0.7.8
 Babel==2.3.4
 backports-abc==0.4
@@ -20,3 +21,6 @@ snowballstemmer==1.2.1
 Sphinx==1.4.1
 sphinx-rtd-theme==0.1.9
 tornado==4.3
+=======
+recommonmark==0.4.0
+>>>>>>> 2da6a8ca49859970d107b018edc500bc852517bf

@@ -62,9 +62,13 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
+<<<<<<< HEAD
 
 #### DOC STuff
 docs/_build
 docs/_static
 docs/_templates
 .DS_STORE
+=======
+.DS_Store
+>>>>>>> 2da6a8ca49859970d107b018edc500bc852517bf

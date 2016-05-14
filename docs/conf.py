@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+<<<<<<< HEAD
 #
 # PGConfig API documentation build configuration file, created by
 # sphinx-quickstart on Sat May 14 17:30:16 2016.
@@ -47,12 +48,33 @@ source_suffix = '.rst'
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
+=======
+
+# At the bottom of conf.py
+def setup(app):
+    app.add_config_value('recommonmark_config', {
+            'url_resolver': lambda url: github_doc_root + url,
+            'auto_toc_tree_section': 'Contents',
+            }, True)
+    app.add_transform(AutoStructify)
+
+import recommonmark
+from recommonmark.transform import AutoStructify
+from recommonmark.parser import CommonMarkParser
+
+source_parsers = {
+    '.md': CommonMarkParser,
+}
+
+source_suffix = ['.rst', '.md']
+>>>>>>> 2da6a8ca49859970d107b018edc500bc852517bf
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = u'PGConfig API'
+<<<<<<< HEAD
 copyright = u'2016, Sebastian Webber'
 author = u'Sebastian Webber'
 
@@ -365,3 +387,9 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 #epub_use_index = True
+=======
+copyright = u'2016, Sebastian Webber and contributors'
+author = u'Sebastian Webber and contributors'
+
+github_doc_root = 'https://github.com/sebastianwebber/pgconfig-api/tree/master/docs'
+>>>>>>> 2da6a8ca49859970d107b018edc500bc852517bf
