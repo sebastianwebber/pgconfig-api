@@ -14,14 +14,11 @@ class FDWHandler(util.CustomRequestHandler):
 		if target_db == "MySQL":
 			target_fdw = "mysql_fdw"
 
-		sql_output  = """CREATE SERVER {}
-FOREIGN DATA WRAPPER {}
-OPTIONS (host '{}', port '{}');""".format(
-				target_server, 
-				target_fdw, 
-				target_host,
-				target_port
-			)
+
+		sql_output = ""
+		sql_output += "CREATE SERVER {} ".format(target_server)
+		sql_output += "FOREIGN DATA WRAPPER {} ".format(target_fdw)
+		sql_output += "OPTIONS (host '{}', port '{}');".format(target_host, target_port)
 
 		self.return_output(sql_output)
 
