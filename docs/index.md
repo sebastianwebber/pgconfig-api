@@ -6,9 +6,8 @@ PGConfig API documentation.
 
 ### 1.1 Foreign Data Wrappers
 
-#### 1.1.1 `/fdw/generate-connection`
-
-| Parameter |  Default Value | Mandatory |
+/fdw/generate-connection
+: | Parameter |  Default Value | Mandatory |
 |-----------|----------------|-----------|
 |server-name| target_server  |  No 	     |
 |host       | localhost      | No        |
