@@ -17,3 +17,8 @@ Generate Connection
 --------------------
 	
 .. automethod:: generators.fdw.FDWHandler.generate_connection
+
+Generate User Mapping
+-----------------------
+	
+.. automethod:: generators.fdw.FDWHandler.generate_user_mapping
