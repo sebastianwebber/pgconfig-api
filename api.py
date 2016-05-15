@@ -5,12 +5,16 @@ import tornado.web
 
 from generators import fdw
 
+settings = {
+    # "template_path": os.path.join(os.path.dirname(__file__), "templates"),
+    # "static_path": os.path.join(os.path.dirname(__file__), "static"),
+    # "debug" : True
+    # ,"autoreload" : True
+}
 
 application = tornado.web.Application([
     (r"/fdw/([^/]+)", fdw.FDWHandler),
-], 
-debug = True, 
-autoreload = True)
+], **settings)
 
 if __name__ == "__main__":
 	application.listen(5000)

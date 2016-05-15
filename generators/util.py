@@ -4,7 +4,7 @@ class CustomRequestHandler(tornado.web.RequestHandler):
 	def return_output(self, message=list()):
 		default_format=self.get_argument("format", "json", True)
 
-		print message
+		# print message
 		# converting string input into a list (for solve issue with multiline strings)
 		process_data = []
 		if not isinstance(message, list):
