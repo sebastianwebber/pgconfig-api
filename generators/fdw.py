@@ -90,6 +90,8 @@ class FDWHandler(util.CustomRequestHandler):
 		"""
 		**Import foreign schema**
 
+		.. warning:: ``IMPORT FOREIGN SCHEMA`` it's only supported on the 9.5 or greater
+
 
 		Returns
 			SQL command with the ``IMPORT FOREIGN SCHEMA`` statement
@@ -145,7 +147,7 @@ class FDWHandler(util.CustomRequestHandler):
 			sql_line += "INTO {};".format(schema_name)
 			sql_output.append(sql_line)
 		else:
-			sql_output.append("-- IMPORT FOREIGN SCHEMA it's only supported on the 9.5 version or greater")
+			sql_output.append("-- IMPORT FOREIGN SCHEMA it's only supported on the 9.5 or greater")
 
 		self.return_output(sql_output)
 
