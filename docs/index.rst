@@ -7,6 +7,8 @@
 PGConfig API's documentation
 ##############################
 
+The API are deployed on http://api.pgconfig.org. Details about each method and options are detailed bellow.
+
 Generators
 ************
 
