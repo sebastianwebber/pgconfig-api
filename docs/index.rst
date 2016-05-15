@@ -22,3 +22,8 @@ Generate User Mapping
 -----------------------
 	
 .. automethod:: generators.fdw.FDWHandler.generate_user_mapping
+
+Import foreign schema
+-----------------------
+	
+.. automethod:: generators.fdw.FDWHandler.import_foreign_schema

@@ -86,10 +86,76 @@ class FDWHandler(util.CustomRequestHandler):
 
 		self.return_output(sql_output)
 
+	def import_foreign_schema(self):
+		"""
+		**Import foreign schema**
+
+
+		Returns
+			SQL command with the ``IMPORT FOREIGN SCHEMA`` statement
+		Sample URL
+			::
+
+				/fdw/import-foreign-schema?remote_schema=sales_schema&server_name=dev_server&schema_name=dev_sales_remote&only_tables=customer,sales&create_schema=true
+		::
+
+		Sample output
+			::
+
+				CREATE SCHEMA IF NOT EXISTS dev_sales_remote; 
+				IMPORT FOREIGN SCHEMA sales_schema LIMIT TO (customer, sales) FROM SERVER dev_server INTO dev_sales_remote; 
+			::
+
+		:param pg_version: PostgreSQL Version
+		:param remote_schema: Remote schema name
+		:param server_name: FDW Server name
+		:param schema_name: Local schema name
+		:param only_tables: list of tables to import (comma separated - no spaces)
+		:param except_tables: list of tables to EXCLUDE from import (comma separated - no spaces)
+		:param create_schema: Generates de statement from ``CREATE SCHEMA``
+
+		"""
+
+		pg_version = float(self.get_argument("pg_version", 9.5, True))
+		remote_schema = self.get_argument("remote_schema", "remote_schema", True)
+		server_name = self.get_argument("server_name", "target_server", True)
+		schema_name = self.get_argument("schema_name", "remote_db", True)
+		only_tables = self.get_argument("only_tables", "table1,table2", True)
+		except_tables = self.get_argument("except_tables", "table1,table2", True)
+		create_schema = self.get_argument("create_schema", False, True)
+
+		sql_output = []
+
+		if pg_version >= 9.5:
+
+			if pg_version >= 9.3 and create_schema:
+				sql_output.append("CREATE SCHEMA IF NOT EXISTS {};".format(schema_name))
+
+
+			sql_line = ""
+			sql_line += "IMPORT FOREIGN SCHEMA {} ".format(remote_schema)
+
+			if only_tables != "table1,table2":
+				sql_line += "LIMIT TO ({}) ".format(', '.join(only_tables.split(',')))
+
+			if except_tables != "table1,table2":
+				sql_line += "EXCEPT ({}) ".format(', '.join(only_tables.split(',')))
+
+			sql_line += "FROM SERVER {} ".format(server_name)
+			sql_line += "INTO {};".format(schema_name)
+			sql_output.append(sql_line)
+		else:
+			sql_output.append("-- IMPORT FOREIGN SCHEMA it's only supported on the 9.5 version or greater")
+
+		self.return_output(sql_output)
+
+
 	def get(self, slug=None):		
 		if slug == "generate-connection":
 			self.generate_connection()
 		elif slug == "generate-user-mapping":
 			self.generate_user_mapping()
+		elif slug == "import-foreign-schema":
+			self.import_foreign_schema()
 		else:
 			raise tornado.web.HTTPError(404)
