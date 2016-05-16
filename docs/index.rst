@@ -24,7 +24,7 @@ The parameter ``format`` can be:
 
 
 ``json``:
-	Exports ouput into json format. *It's the default value*. Example:
+	Exports ouput into json format. Example:
 
 	.. code-block:: json
 
@@ -35,6 +35,8 @@ The parameter ``format`` can be:
 	        "IMPORT FOREIGN SCHEMA sales_schema LIMIT TO (customer, sales) FROM SERVER dev_server INTO dev_sales_remote;"
 	    ]
 	   }
+	.. note:: ``json`` format is the default value.
+	
 
 ``bash``:
 	Exports ouput into bash format. Example:
