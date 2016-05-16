@@ -34,6 +34,22 @@ class CustomRequestHandler(tornado.web.RequestHandler):
 
 				self.write(new_output)
 			
+		if default_format == "bash":
+
+			bash_script = """
+#!/bin/bash
+
+"""
+			self.write(bash_script)
+
+			if len(process_data) == 1:
+				self.write('SQL_QUERY="{}"\n'.format(process_data[0]))
+				self.write('psql -c "${SQL_QUERY}"\n')
+			else:
+				for line in process_data:
+					self.write('SQL_QUERY="{}"\n'.format(line))
+					self.write('psql -c "${SQL_QUERY}"\n\n')
+
 		else:
 			if len(process_data) == 1:
 				self.write(process_data[0])
