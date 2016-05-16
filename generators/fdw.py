@@ -107,8 +107,7 @@ class FDWHandler(util.CustomRequestHandler):
 				CREATE SCHEMA IF NOT EXISTS dev_sales_remote; 
 				IMPORT FOREIGN SCHEMA sales_schema LIMIT TO (customer, sales) FROM SERVER dev_server INTO dev_sales_remote; 
 			::
-
-		:param pg_version: PostgreSQL Version
+			
 		:param remote_schema: Remote schema name
 		:param server_name: FDW Server name
 		:param schema_name: Local schema name
