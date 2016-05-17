@@ -37,6 +37,44 @@ class TuningHandler(util.DefaultRequestHandler):
 
 	
 	def list_enviroments(self):
+
+		"""
+		**Get a list of the proposed environments**
+
+
+		Returns
+			list of proposed environments
+		Sample URL
+			::
+
+				/v1/tuning/list-enviroments
+			::
+
+		Sample output
+			::
+			
+				{
+					"data": [
+						"WEB",
+						"OLTP",
+						"DW",
+						"Mixed",
+						"Desktop"
+					],
+					"jsonapi": {
+						"version": "1.0"
+					},
+					"links": {
+						"self": "http://api.pgconfig.org/v1/tuning/list-enviroments"
+					},
+					"meta": {
+						"copyright": "PGConfig API",
+						"version": "1.0"
+					}
+				}
+			::
+
+		"""
 		self.write_json_api([ "WEB", "OLTP", "DW", "Mixed", "Desktop" ]) 
 
 	def _get_rules(self, enviroment_name):
@@ -206,10 +244,150 @@ class TuningHandler(util.DefaultRequestHandler):
 		return return_output
 		
 	def get_rules(self):
+
+		"""
+		**Get a list of rules **
+
+
+		Returns
+			list of rules (used to compute get-config) 
+		Sample URL
+			::
+
+				/v1/tuning/get-rules
+			::
+
+		Sample output
+			::
+			
+				[{
+					"category": "memory_related",
+					"description": "Memory Configuration",
+					"paramater-list": [{
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-resource.html#GUC-SHARED-BUFFERS",
+						"format": "bytes",
+						"formula": "TOTAL_RAM / 4",
+						"max_value": "8GB",
+						"name": "shared_buffers"
+					}, {
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-resource.html#GUC-WORK-MEM",
+						"format": "bytes",
+						"formula": "(TOTAL_RAM / 4) * 3",
+						"name": "effective_cache_size"
+					}, {
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE",
+						"format": "bytes",
+						"formula": "(TOTAL_RAM / MAX_CONNECTIONS)",
+						"name": "work_mem"
+					}, {
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM",
+						"format": "bytes",
+						"formula": "(TOTAL_RAM / 16)",
+						"max_value": "2GB",
+						"name": "maintenance_work_mem"
+					}]
+				}, {
+					"category": "checkpoint_related",
+					"description": "Checkpoint Related Configuration",
+					"paramater-list": [{
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE",
+						"format": "bytes",
+						"formula": 536870912,
+						"min_version": 9.5,
+						"name": "min_wal_size"
+					}, {
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE",
+						"format": "bytes",
+						"formula": 1610612736,
+						"min_version": 9.5,
+						"name": "max_wal_size"
+					}, {
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET",
+						"format": "float",
+						"formula": 0.7,
+						"name": "checkpoint_completion_target"
+					}, {
+						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET",
+						"format": "bytes",
+						"formula": "(TOTAL_RAM / 4 ) * 0.03",
+						"max_value": "16MB",
+						"name": "wal_buffers"
+					}]
+				}]
+			::
+
+		"""
 		return_data = self._get_rules(self.enviroment_name)
 		self.return_output(return_data)
 		
 	def get_config(self):
+		"""
+		**Get Configuration**
+
+
+		Returns
+			list of suggested paramaters
+		Sample URL
+			::
+
+				/v1/tuning/get-config?enviroment_name=WEB&total_ram=8GB&max_connections=200&format=conf
+			::
+
+		Sample output
+			::
+			
+				{
+					"data": [{
+						"category": "memory_related",
+						"description": "Memory Configuration",
+						"paramater-list": [{
+							"config_value": "2.00GB",
+							"name": "shared_buffers"
+						}, {
+							"config_value": "6.00GB",
+							"name": "effective_cache_size"
+						}, {
+							"config_value": "40.96MB",
+							"name": "work_mem"
+						}, {
+							"config_value": "512.00MB",
+							"name": "maintenance_work_mem"
+						}]
+					}, {
+						"category": "checkpoint_related",
+						"description": "Checkpoint Related Configuration",
+						"paramater-list": [{
+							"config_value": "512.00MB",
+							"name": "min_wal_size"
+						}, {
+							"config_value": "1.50GB",
+							"name": "max_wal_size"
+						}, {
+							"config_value": 0.7,
+							"name": "checkpoint_completion_target"
+						}, {
+							"config_value": "61.44MB",
+							"name": "wal_buffers"
+						}]
+					}],
+					"jsonapi": {
+						"version": "1.0"
+					},
+					"links": {
+						"self": "http://api.pgconfig.org/v1/tuning/get-config?enviroment_name=WEB&total_ram=8GB&max_connections=200&format=json"
+					},
+					"meta": {
+						"copyright": "PGConfig API",
+						"version": "1.0"
+					}
+				}
+			::
+
+		:param total_ram: Total dedicated of RAM memory of the database server
+		:param max_connections: number of maximum espected connections
+		:param enviroment_name: type of enviroment
+
+		"""
 		message = self._get_config()
 	
 		if self.default_format == "conf":
@@ -251,6 +429,8 @@ class TuningHandler(util.DefaultRequestHandler):
 		return rule_list
 		
         
+
+
 	def get(self, slug=None):		
 		if slug == "get-config":
 			self.get_config()

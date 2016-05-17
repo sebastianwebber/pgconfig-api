@@ -7,21 +7,80 @@
 PGConfig API's documentation
 ##############################
 
-The API are deployed on http://api.pgconfig.org. Details about each method and options are detailed bellow.
+The API are deployed on http://api.pgconfig.org/v1/. Details about each method and options are detailed bellow.
 
+.. note:: All generators and advisors support the common parameters ``pg_version`` and ``format``.
+
+Advisors
+**********
+
+Tuning
+==========================
+
+
+
+About output ``format``
+==========================
+
+On tuning advisor, extra formats are avaliable:
+
+``conf``:
+	Exports ouput into configuration file ( ``.conf``) format. Example:
+
+	.. code-block:: bash
+	
+		# Memory Configuration
+		shared_buffers = 2.00GB
+		effective_cache_size = 6.00GB
+		work_mem = 40.96MB
+		maintenance_work_mem = 512.00MB
+
+		# Checkpoint Related Configuration
+		min_wal_size = 512.00MB
+		max_wal_size = 1.50GB
+		checkpoint_completion_target = 0.7
+		wal_buffers = 61.44MB
+
+
+``alter_system``:
+	Exports ouput into ``ALTER SYSTEM`` command format. Example:
+
+	.. code-block:: sql
+	
+		-- Memory Configuration
+		ALTER SYSTEM SET shared_buffers TO '2.00GB';
+		ALTER SYSTEM SET effective_cache_size TO '6.00GB';
+		ALTER SYSTEM SET work_mem TO '40.96MB';
+		ALTER SYSTEM SET maintenance_work_mem TO '512.00MB';
+
+		-- Checkpoint Related Configuration
+		ALTER SYSTEM SET min_wal_size TO '512.00MB';
+		ALTER SYSTEM SET max_wal_size TO '1.50GB';
+		ALTER SYSTEM SET checkpoint_completion_target TO '0.7';
+		ALTER SYSTEM SET wal_buffers TO '61.44MB';
+
+List Enviroments
+--------------------
+
+.. automethod:: advisors.tuning.TuningHandler.list_enviroments
+
+Get Rules
+--------------------
+
+.. automethod:: advisors.tuning.TuningHandler.get_rules
+
+Get Configuration
+--------------------
+
+.. automethod:: advisors.tuning.TuningHandler.get_config
 
 Generators
 ************
-
-.. note:: All generators support the common parameters ``pg_version`` and ``format``.
 
 About output ``format``
 ==========================
 
 The parameter ``format`` can be:
-
-
-
 
 ``json``:
 	Exports ouput into json format. Example:
