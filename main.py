@@ -18,10 +18,14 @@ settings = {
     ,"autoreload" : True
 }
 
+API_VERSION=1.0
+API_PREFIX="/v1/"
+
 application = tornado.web.Application([
-	(r"/", IndexHandler),
-    (r"/fdw/([^/]+)", fdw.FDWHandler),
-    (r"/tuning/([^/]+)", tuning.TuningHandler),
+    (r"/", tornado.web.RedirectHandler, {"url": "/v1"}),
+	(r"/v1", IndexHandler),
+    (r"/v1/fdw/([^/]+)", fdw.FDWHandler),
+    (r"/v1/tuning/([^/]+)", tuning.TuningHandler),
 ], **settings)
 
 if __name__ == "__main__":
