@@ -5,6 +5,7 @@ import tornado.ioloop
 import tornado.web
 
 from generators import fdw
+from advisors import tuning
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -20,6 +21,7 @@ settings = {
 application = tornado.web.Application([
 	(r"/", IndexHandler),
     (r"/fdw/([^/]+)", fdw.FDWHandler),
+    (r"/tuning/([^/]+)", tuning.TuningHandler),
 ], **settings)
 
 if __name__ == "__main__":

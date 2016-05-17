@@ -1,7 +1,7 @@
 import tornado.web
-import util
+from common import util
 
-class FDWHandler(util.CustomRequestHandler):
+class FDWHandler(util.GeneratorRequestHandler):
 	"""Foreign Data Wrapper Generator"""
 
 	def generate_connection(self):
