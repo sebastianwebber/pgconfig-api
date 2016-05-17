@@ -1,5 +1,4 @@
 import tornado.web
-import parameter
 import json
 
 class DefaultRequestHandler(tornado.web.RequestHandler):	
