@@ -19,7 +19,7 @@ SYMBOLS = {
                     'zebi', 'yobi'),
 }
 
-def bytes2human(n, format='%(value).2f%(symbol)s', symbols='customary'):
+def bytes2human(n, format='%(value).0f%(symbol)s', symbols='customary'):
     """
     Convert n bytes into a human readable string based on format.
     symbols can be either "customary", "customary_ext", "iec" or "iec_ext",
@@ -63,10 +63,15 @@ def bytes2human(n, format='%(value).2f%(symbol)s', symbols='customary'):
     prefix = {}
     for i, s in enumerate(symbols[1:]):
         prefix[s] = 1 << (i+1)*10
+
+    ## FORCE round up less then KB
     for symbol in reversed(symbols[1:]):
-        if n >= prefix[symbol]:
-            value = float(n) / prefix[symbol]
-            return format % locals()
+        if n >= prefix[symbol]:           
+            if (int(n) % prefix[symbol]) == 0:
+                value = float(n) / prefix[symbol]
+                return format % locals()
+            
+            
     return format % dict(symbol=symbols[0], value=n)
 
 def human2bytes(s):

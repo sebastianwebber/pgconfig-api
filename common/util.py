@@ -40,7 +40,7 @@ class DefaultRequestHandler(tornado.web.RequestHandler):
 		_meta = {}
 		_meta["copyright"] = "PGConfig API"
 		_meta["version"] = "1.0"
-		# _meta["authors"] = ("Sebastian Webber",)
+		_meta["arguments"] = self.request.arguments
 		_document["meta"] = _meta
 		
 		_document["jsonapi"] = { "version" : "1.0"}

@@ -105,7 +105,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter = {}
 		parameter["name"] = "effective_cache_size"
 		parameter["format"] = "bytes"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-resource.html#GUC-WORK-MEM".format(self.pg_version)
+		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE".format(self.pg_version)
 		
 		if	enviroment_name == "Desktop":
 			parameter["formula"] = "TOTAL_RAM / 4"
@@ -117,8 +117,10 @@ class TuningHandler(util.DefaultRequestHandler):
 		## work_mem
 		parameter = {}
 		parameter["name"] = "work_mem"
+		parameter["min_value"] = "4MB"
 		parameter["format"] = "bytes"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE".format(self.pg_version)
+		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-resource.html#GUC-WORK-MEM".format(self.pg_version)
+		
 		
 		if enviroment_name in [ "WEB", "OLTP" ]:
 			parameter["formula"] = "(TOTAL_RAM / MAX_CONNECTIONS)"
@@ -178,6 +180,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter = {}
 			parameter["name"] = "min_wal_size"
 			parameter["min_version"] = 9.5
+			parameter["min_value"] = "80MB"
 			parameter["format"] = "bytes"
 			parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE".format(self.pg_version)
 			
@@ -196,6 +199,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter = {}
 			parameter["name"] = "max_wal_size"
 			parameter["min_version"] = 9.5
+			parameter["min_value"] = "1GB"
 			parameter["format"] = "bytes"
 			parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE".format(self.pg_version)
 			
@@ -401,8 +405,6 @@ class TuningHandler(util.DefaultRequestHandler):
 		total_ram = bytes.human2bytes(self.get_argument("total_ram", "2GB", True))
 		max_connections = self.get_argument("max_connections", 100, True)
 	
-		self.set_header('Content-Type', 'application/json')
-		
 		rule_list = self._get_rules(self.enviroment_name)
 		
 		for category in rule_list:
@@ -414,14 +416,38 @@ class TuningHandler(util.DefaultRequestHandler):
 					formula = formula.replace("TOTAL_RAM", str(total_ram))
 					formula = formula.replace("MAX_CONNECTIONS", str(max_connections))
 					
-				parameter["config_value"] = eval(str(formula))
+				config_value = eval(str(formula))
+				
+				min_value = parameter.get("min_value", config_value)
+				max_value = parameter.get("max_value", config_value)
+				
+				# print min_value
+				# print max_value
+				
+				if parameter["format"] == "bytes":
+					if "b" in str(min_value).lower():
+						min_value = humanfriendly.parse_size(min_value)
+						
+					if "b" in str(max_value).lower():
+						max_value = humanfriendly.parse_size(max_value)
+						
+					
+				
+				parameter["config_value"] = config_value
+				
+				if config_value < min_value:
+					parameter["config_value"] = min_value
+					
+				if config_value > max_value:
+					parameter["config_value"] = max_value
 				
 				if parameter["format"] == "bytes":
 					parameter["config_value"] = bytes.bytes2human(parameter["config_value"])
 						
 				parameter.pop("doc_url", None)
-				parameter.pop("formula", None)
+				# parameter.pop("formula", None)
 				parameter.pop("max_value", None)
+				parameter.pop("min_value", None)
 				parameter.pop("format", None)
 				parameter.pop("min_version", None)
 				parameter.pop("max_version", None)
