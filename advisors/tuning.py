@@ -426,10 +426,10 @@ class TuningHandler(util.DefaultRequestHandler):
 				
 				if parameter["format"] == "bytes":
 					if "b" in str(min_value).lower():
-						min_value = humanfriendly.parse_size(min_value)
+						min_value = bytes.human2bytes(min_value)
 						
 					if "b" in str(max_value).lower():
-						max_value = humanfriendly.parse_size(max_value)
+						max_value = bytes.human2bytes(max_value)
 						
 					
 				
