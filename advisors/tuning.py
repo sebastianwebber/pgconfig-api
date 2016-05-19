@@ -445,7 +445,7 @@ class TuningHandler(util.DefaultRequestHandler):
 					parameter["config_value"] = bytes.bytes2human(parameter["config_value"])
 						
 				parameter.pop("doc_url", None)
-				# parameter.pop("formula", None)
+				parameter.pop("formula", None)
 				parameter.pop("max_value", None)
 				parameter.pop("min_value", None)
 				parameter.pop("format", None)
