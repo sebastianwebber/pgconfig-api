@@ -10,6 +10,7 @@ class TuningHandler(util.DefaultRequestHandler):
 	def initialize(self):
 		super(TuningHandler, self).initialize()
 		self.enviroment_name = self.get_argument("enviroment_name", "WEB", True)
+		self.show_doc = self.get_argument("show_doc", False, True)
 	
 	def write_config(self, output_data):
 		for category in output_data:
@@ -30,11 +31,6 @@ class TuningHandler(util.DefaultRequestHandler):
 					"ALTER SYSTEM SET {} TO '{}';\n".format(parameter["name"], config_value)
 				)
 			self.write("\n")
-				
-	def return_output(self, message):
-		self.set_header('Content-Type', 'application/json')
-		self.write( json.dumps(message, sort_keys = True,separators=(',', ': ')))
-
 	
 	def list_enviroments(self):
 
@@ -77,6 +73,28 @@ class TuningHandler(util.DefaultRequestHandler):
 		"""
 		self.write_json_api([ "WEB", "OLTP", "DW", "Mixed", "Desktop" ]) 
 
+
+	def _define_doc(self, parameter_name, doc_url):
+		doc_stuff = {}
+		doc_file_name = "pg_doc/{}/{}.txt".format(parameter_name, self.pg_version)
+		doc_stuff["url"] = "http://www.postgresql.org/docs/{}/static/{}".format(self.pg_version, doc_url)
+		
+		# if parameter_name in [ "shared_buffers", "effective_cache_size", "work_mem" ]  :
+		doc_file = open(doc_file_name, 'r')
+		file_content = doc_file.readlines()
+		doc_file.close()
+		
+		doc_stuff["type"] = file_content[0].split(' ')[1].replace('(','').replace(')','').replace('\n','')
+		
+		details = list()
+		for line in file_content[1:]:
+			if line != "\n":
+				details.append(line.replace('\n', ''))
+		
+		doc_stuff["details"] = details
+	
+		return doc_stuff
+
 	def _get_rules(self, enviroment_name):
 	
 		return_output = list()
@@ -92,7 +110,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "shared_buffers"
 		parameter["max_value"] = "8GB"
 		parameter["format"] = "bytes"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-resource.html#GUC-SHARED-BUFFERS".format(self.pg_version)
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-SHARED-BUFFERS")
 		
 		if	enviroment_name == "Desktop":
 			parameter["formula"] = "TOTAL_RAM / 16"
@@ -105,7 +123,9 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter = {}
 		parameter["name"] = "effective_cache_size"
 		parameter["format"] = "bytes"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE".format(self.pg_version)
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE")
+
 		
 		if	enviroment_name == "Desktop":
 			parameter["formula"] = "TOTAL_RAM / 4"
@@ -119,7 +139,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "work_mem"
 		parameter["min_value"] = "4MB"
 		parameter["format"] = "bytes"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-resource.html#GUC-WORK-MEM".format(self.pg_version)
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-WORK-MEM")
 		
 		
 		if enviroment_name in [ "WEB", "OLTP" ]:
@@ -136,7 +156,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "maintenance_work_mem"
 		parameter["format"] = "bytes"
 		parameter["max_value"] = "2GB"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM".format(self.pg_version)
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM")
 		
 		if enviroment_name in [ "WEB", "OLTP" ]:
 			parameter["formula"] = "(TOTAL_RAM / 16)"
@@ -162,7 +182,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			# parameter["min_version"] = 8.0
 			# parameter["max_version"] = 9.4
 			parameter["format"] = "decimal"
-			parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS".format(self.pg_version)
+			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS")
 			
 			if enviroment_name in [ "WEB", "Mixed" ]:
 				parameter["formula"] = 32
@@ -182,7 +202,8 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["min_version"] = 9.5
 			parameter["min_value"] = "80MB"
 			parameter["format"] = "bytes"
-			parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE".format(self.pg_version)
+			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-MIN-WAL-SIZE")
+
 			
 			if enviroment_name in [ "WEB", "Mixed" ]:
 				parameter["formula"] = 536870912
@@ -201,7 +222,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["min_version"] = 9.5
 			parameter["min_value"] = "1GB"
 			parameter["format"] = "bytes"
-			parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE".format(self.pg_version)
+			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-MAX-WAL-SIZE")
 			
 			if enviroment_name in [ "WEB", "Mixed" ]:
 				parameter["formula"] = 1610612736
@@ -218,7 +239,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter = {}
 		parameter["name"] = "checkpoint_completion_target"
 		parameter["format"] = "float"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET".format(self.pg_version)
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET")
 		
 		if enviroment_name ==  "WEB":
 			parameter["formula"] = 0.7
@@ -234,7 +255,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "wal_buffers"
 		parameter["format"] = "bytes"
 		parameter["max_value"] = "16MB"
-		parameter["doc_url"] = "http://www.postgresql.org/docs/{}/static/runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET".format(self.pg_version)
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-WAL-BUFFERS")
 		
 		if enviroment_name in [ "WEB", "OLTP", "DW", "Mixed" ]:
 			parameter["formula"] = "(TOTAL_RAM / 4 ) * 0.03"
@@ -451,12 +472,14 @@ class TuningHandler(util.DefaultRequestHandler):
 				parameter.pop("format", None)
 				parameter.pop("min_version", None)
 				parameter.pop("max_version", None)
+				
+				if not self.show_doc:
+					parameter.pop("documentation", None)
 
 		return rule_list
 		
         
-
-
+	# TODO: Create a method to display paramaters documentation
 	def get(self, slug=None):		
 		if slug == "get-config":
 			self.get_config()

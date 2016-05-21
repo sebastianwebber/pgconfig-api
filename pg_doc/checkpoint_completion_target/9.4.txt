@@ -1,0 +1,2 @@
+checkpoint_completion_target (floating point)
+Specifies the target of checkpoint completion, as a fraction of total time between checkpoints. The default is 0.5. This parameter can only be set in the postgresql.conf file or on the server command line.
