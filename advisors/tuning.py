@@ -14,7 +14,7 @@ class TuningHandler(util.DefaultRequestHandler):
 	def write_config(self, output_data):
 		for category in output_data:
 			self.write("# {}\n".format(category["description"]))
-			for parameter in category["paramater-list"]:
+			for parameter in category["paramaters"]:
 				config_value = parameter.get("config_value", "NI")
 				self.write(
 					"{} = {}\n".format(parameter["name"], config_value)
@@ -24,7 +24,7 @@ class TuningHandler(util.DefaultRequestHandler):
 	def write_alter_system(self, output_data):
 		for category in output_data:
 			self.write("-- {}\n".format(category["description"]))
-			for parameter in category["paramater-list"]:
+			for parameter in category["paramaters"]:
 				config_value = parameter.get("config_value", "NI")
 				self.write(
 					"ALTER SYSTEM SET {} TO '{}';\n".format(parameter["name"], config_value)
@@ -85,7 +85,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		category = {}
 		category["category"] = "memory_related"
 		category["description"] = "Memory Configuration"
-		category["paramater-list"] = list()
+		category["paramaters"] = list()
 	
 		## shared_buffers
 		parameter = {}
@@ -99,7 +99,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "TOTAL_RAM / 4"
 		
-		category["paramater-list"].append(parameter)
+		category["paramaters"].append(parameter)
 		
 		## effective_cache_size
 		parameter = {}
@@ -112,7 +112,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "(TOTAL_RAM / 4) * 3"
 		
-		category["paramater-list"].append(parameter)
+		category["paramaters"].append(parameter)
 		
 		## work_mem
 		parameter = {}
@@ -129,7 +129,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "((TOTAL_RAM / 6) / MAX_CONNECTIONS)"
 		
-		category["paramater-list"].append(parameter)
+		category["paramaters"].append(parameter)
 		
 		## maintenance_work_mem
 		parameter = {}
@@ -145,7 +145,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "(TOTAL_RAM / 16)"
 		
-		category["paramater-list"].append(parameter)
+		category["paramaters"].append(parameter)
 		
 		return_output.append(category)
 		
@@ -153,7 +153,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		category = {}
 		category["category"] = "checkpoint_related"
 		category["description"] = "Checkpoint Related Configuration"
-		category["paramater-list"] = list()
+		category["paramaters"] = list()
 		
 		## checkpoint_segments
 		if float(self.pg_version) >= 8.0 and float(self.pg_version) <= 9.4:
@@ -173,7 +173,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			else:
 				parameter["formula"] = 3
 			
-			category["paramater-list"].append(parameter)
+			category["paramaters"].append(parameter)
 		
 		## min_wal_size
 		if float(self.pg_version) >= 9.5:
@@ -193,7 +193,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			else:
 				parameter["formula"] = 2147483648
 			
-			category["paramater-list"].append(parameter)
+			category["paramaters"].append(parameter)
 			
 			## max_wal_size
 			parameter = {}
@@ -212,7 +212,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			else:
 				parameter["formula"] = 1073741824
 			
-			category["paramater-list"].append(parameter)
+			category["paramaters"].append(parameter)
 		
 		## checkpoint_completion_target
 		parameter = {}
@@ -227,7 +227,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = 0.5
 		
-		category["paramater-list"].append(parameter)
+		category["paramaters"].append(parameter)
 		
 		## wal_buffers
 		parameter = {}
@@ -241,7 +241,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "(TOTAL_RAM / 16 ) * 0.03"
 		
-		category["paramater-list"].append(parameter)
+		category["paramaters"].append(parameter)
 		
 		return_output.append(category)
 		
@@ -267,7 +267,7 @@ class TuningHandler(util.DefaultRequestHandler):
 				[{
 					"category": "memory_related",
 					"description": "Memory Configuration",
-					"paramater-list": [{
+					"paramaters": [{
 						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-resource.html#GUC-SHARED-BUFFERS",
 						"format": "bytes",
 						"formula": "TOTAL_RAM / 4",
@@ -293,7 +293,7 @@ class TuningHandler(util.DefaultRequestHandler):
 				}, {
 					"category": "checkpoint_related",
 					"description": "Checkpoint Related Configuration",
-					"paramater-list": [{
+					"paramaters": [{
 						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE",
 						"format": "bytes",
 						"formula": 536870912,
@@ -344,7 +344,7 @@ class TuningHandler(util.DefaultRequestHandler):
 					"data": [{
 						"category": "memory_related",
 						"description": "Memory Configuration",
-						"paramater-list": [{
+						"paramaters": [{
 							"config_value": "2.00GB",
 							"name": "shared_buffers"
 						}, {
@@ -360,7 +360,7 @@ class TuningHandler(util.DefaultRequestHandler):
 					}, {
 						"category": "checkpoint_related",
 						"description": "Checkpoint Related Configuration",
-						"paramater-list": [{
+						"paramaters": [{
 							"config_value": "512.00MB",
 							"name": "min_wal_size"
 						}, {
@@ -408,7 +408,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		rule_list = self._get_rules(self.enviroment_name)
 		
 		for category in rule_list:
-			for parameter in category["paramater-list"]:
+			for parameter in category["paramaters"]:
 			
 				formula = parameter["formula"]
 				
