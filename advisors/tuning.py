@@ -411,7 +411,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		:param total_ram: Total dedicated of RAM memory of the database server
 		:param max_connections: number of maximum espected connections
 		:param enviroment_name: type of enviroment
-
+		:param show_doc: show documentation details
 		"""
 		message = self._get_config()
 	
@@ -463,7 +463,15 @@ class TuningHandler(util.DefaultRequestHandler):
 					parameter["config_value"] = max_value
 				
 				if parameter["format"] == "bytes":
-					parameter["config_value"] = bytes.bytes2human(parameter["config_value"])
+				
+					# from hurry.filesize import size,verbose,alternative
+				
+					config_value = parameter["config_value"]
+					# parameter["config_value_original"] = bytes.bytes2human(config_value)
+					parameter["config_value"] = bytes.sizeof_fmt(config_value)
+					# parameter["config_value_hurrysize"] = size(config_value, system=alternative)
+					# parameter["config_value_hurrysize_alternative"] = size(config_value, system=alternative)
+					# parameter["config_value_hurrysize_verbose"] = size(config_value, system=verbose)
 						
 				parameter.pop("doc_url", None)
 				parameter.pop("formula", None)

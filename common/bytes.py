@@ -19,6 +19,19 @@ SYMBOLS = {
                     'zebi', 'yobi'),
 }
 
+def sizeof_fmt(num):
+    for x in ['bytes','KB','MB','GB','TB']:
+        if num < 1024.0:
+            return "%3.1f%s" % (num, x)
+        num /= 1024.0
+        
+def sizeof_fmt2(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
 def bytes2human(n, format='%(value).0f%(symbol)s', symbols='customary'):
     """
     Convert n bytes into a human readable string based on format.
