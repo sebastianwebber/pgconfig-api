@@ -1,7 +1,11 @@
 import tornado.web
 import json
+from tornado_cors import CorsMixin
 
-class DefaultRequestHandler(tornado.web.RequestHandler):	
+
+class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):	
+	
+	CORS_ORIGIN = '*'
 	
 	def initialize(self):
 		self.default_format = self.get_argument("format", "json", True)

@@ -6,5 +6,5 @@ setup(name='PGConfig API',
       author='Sebastian Webber',
       author_email='sebastian@swebber.me',
       url='http://api.pgconfig.org/',
-      install_requires=['tornado', 'requests', 'beautifulsoup4'],
+      install_requires=['tornado', 'requests', 'beautifulsoup4', 'tornado-cors'],
      )
