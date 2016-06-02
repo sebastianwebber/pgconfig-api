@@ -388,6 +388,24 @@ class TuningHandler(util.DefaultRequestHandler):
 		
 		category["parameters"].append(parameter)
 		
+		## max_connections
+		parameter = {}
+		parameter["name"] = "max_connections"
+		parameter["format"] = "integer"
+		
+		abstract = "This parameter defines a max connections allowed."
+		default_value = ""
+		
+		if float(self.pg_version) >= 9.1:
+			default_value = "100"
+			
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-connection.html#GUC-MAX-CONNECTIONS", abstract, default_value)
+		
+		parameter["formula"] = self.get_argument("max_connections", 100, True)
+		
+		category["parameters"].append(parameter)
+		
 		return_output.append(category)
 		
 		return return_output
