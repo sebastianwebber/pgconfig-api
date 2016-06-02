@@ -120,6 +120,9 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["max_value"] = "8GB"
 		parameter["format"] = "bytes"
 		
+		recomendation_posts = {}
+		recomendation_posts["Tuning Your PostgreSQL Server"] = "https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server#shared_buffers"
+		recomendation_posts["Tuning shared_buffers and wal_buffers"] = "http://rhaas.blogspot.com.br/2012/03/tuning-sharedbuffers-and-walbuffers.html"
 		
 		abstract = "This parameter allocate memory slots, used by all process. Mainly works as the disk cache and its similar to oracle's SGA buffer."
 		default_value = ""
@@ -130,7 +133,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			default_value = "128MB"
 		
 		
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-SHARED-BUFFERS", abstract, default_value)
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-SHARED-BUFFERS", abstract, default_value, recomendation_posts)
 		
 		if	enviroment_name == "Desktop":
 			parameter["formula"] = "TOTAL_RAM / 16"
@@ -176,7 +179,11 @@ class TuningHandler(util.DefaultRequestHandler):
 		elif float(self.pg_version) >= 9.4:
 			default_value = "4MB"
 			
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-WORK-MEM", abstract, default_value)
+			
+		recomendation_posts = {}
+		recomendation_posts["Understaning postgresql.conf: WORK_MEM"] = "https://www.depesz.com/2011/07/03/understanding-postgresql-conf-work_mem/"
+			
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-WORK-MEM", abstract, default_value, recomendation_posts)
 		
 		
 		if enviroment_name in [ "WEB", "OLTP" ]:
@@ -228,6 +235,9 @@ class TuningHandler(util.DefaultRequestHandler):
 			# parameter["min_version"] = 8.0
 			# parameter["max_version"] = 9.4
 			parameter["format"] = "decimal"
+			
+			recomendation_posts = {}
+			recomendation_posts["WRITE AHEAD LOG + UNDERSTANDING POSTGRESQL.CONF: CHECKPOINT_SEGMENTS, CHECKPOINT_TIMEOUT and CHECKPOINT_WARNING"] = "https://www.depesz.com/2011/07/14/write-ahead-log-understanding-postgresql-conf-checkpoint_segments-checkpoint_timeout-checkpoint_warning/"
 		
 			abstract = "This parameter defines how much WAL files can be stored before a automatic CHECKPOINT. All files are stored in the pg_xlog directory."
 			default_value = ""
@@ -235,7 +245,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			if float(self.pg_version) >= 9.1:
 				default_value = "3"
 			
-			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS", abstract, default_value)
+			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS", abstract, default_value, recomendation_posts)
 			
 			if enviroment_name in [ "WEB", "Mixed" ]:
 				parameter["formula"] = 32
