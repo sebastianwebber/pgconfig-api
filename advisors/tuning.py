@@ -74,7 +74,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		self.write_json_api([ "WEB", "OLTP", "DW", "Mixed", "Desktop" ]) 
 
 
-	def _define_doc(self, parameter_name, doc_url):
+	def _define_doc(self, parameter_name, doc_url, abstract = "", default_value = "", recomendations = {}):
 		doc_stuff = {}
 		doc_file_name = "pg_doc/{}/{}.txt".format(parameter_name, self.pg_version)
 		doc_stuff["url"] = "http://www.postgresql.org/docs/{}/static/{}".format(self.pg_version, doc_url)
@@ -92,6 +92,15 @@ class TuningHandler(util.DefaultRequestHandler):
 				details.append(line.replace('\n', ''))
 		
 		doc_stuff["details"] = details
+		
+		if abstract != "":
+			doc_stuff["abstract"] = abstract
+		
+		if abstract != "":
+			doc_stuff["default_value"] = default_value
+			
+		if recomendations:
+			doc_stuff["recomendations"] = recomendations
 	
 		return doc_stuff
 
@@ -110,7 +119,18 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "shared_buffers"
 		parameter["max_value"] = "8GB"
 		parameter["format"] = "bytes"
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-SHARED-BUFFERS")
+		
+		
+		abstract = "This paramater allocate memory slots, used by all process. Mainly works as the disk cache and its similar to oracle's SGA buffer."
+		default_value = ""
+		
+		if float(self.pg_version) in (9.1, 9.2):
+			default_value = "32MB"
+		elif float(self.pg_version) >= 9.3:
+			default_value = "128MB"
+		
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-SHARED-BUFFERS", abstract, default_value)
 		
 		if	enviroment_name == "Desktop":
 			parameter["formula"] = "TOTAL_RAM / 16"
@@ -124,7 +144,15 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "effective_cache_size"
 		parameter["format"] = "bytes"
 		
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE")
+		abstract = "This paramater does not allocate any resource, just tells to the query planner how much of the operating system cache are avaliable to use. Remember that shared_buffers needs to smaller than 8GB, then the query planner will prefer read the disk because it will be on memory."
+		default_value = ""
+		
+		if float(self.pg_version) in (9.1, 9.2):
+			default_value = "128MB"
+		elif float(self.pg_version) >= 9.4:
+			default_value = "4GB"
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE", abstract,default_value)
 
 		
 		if	enviroment_name == "Desktop":
@@ -139,7 +167,16 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "work_mem"
 		parameter["min_value"] = "4MB"
 		parameter["format"] = "bytes"
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-WORK-MEM")
+				
+		abstract = "This paramater defines how much a work_mem buffer can allocate. Each query can open many work_mem buffers when execute (normally one by subquery) if it uses any sort (or aggregate) operation. When work_mem its too small a temp file is created."
+		default_value = ""
+		
+		if float(self.pg_version) >= 9.1 and float(self.pg_version) <= 9.3:
+			default_value = "1MB"
+		elif float(self.pg_version) >= 9.4:
+			default_value = "4MB"
+			
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-WORK-MEM", abstract, default_value)
 		
 		
 		if enviroment_name in [ "WEB", "OLTP" ]:
@@ -156,7 +193,16 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "maintenance_work_mem"
 		parameter["format"] = "bytes"
 		parameter["max_value"] = "2GB"
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM")
+		
+		abstract = "This paramater defines how much a maintenance operation (ALTER TABLE, VACUUM, REINDEX, AutoVACUUM worker, etc) buffer can use."
+		default_value = ""
+		
+		if float(self.pg_version) >= 9.1 and float(self.pg_version) <= 9.3:
+			default_value = "16MB"
+		elif float(self.pg_version) >= 9.4:
+			default_value = "64MB"
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM", abstract, default_value)
 		
 		if enviroment_name in [ "WEB", "OLTP" ]:
 			parameter["formula"] = "(TOTAL_RAM / 16)"
@@ -182,7 +228,14 @@ class TuningHandler(util.DefaultRequestHandler):
 			# parameter["min_version"] = 8.0
 			# parameter["max_version"] = 9.4
 			parameter["format"] = "decimal"
-			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS")
+		
+			abstract = "This paramater defines how much WAL files can be stored before a automatic CHECKPOINT. All files are stored in the pg_xlog directory."
+			default_value = ""
+			
+			if float(self.pg_version) >= 9.1:
+				default_value = "3"
+			
+			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS", abstract, default_value)
 			
 			if enviroment_name in [ "WEB", "Mixed" ]:
 				parameter["formula"] = 32
@@ -202,7 +255,14 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["min_version"] = 9.5
 			parameter["min_value"] = "80MB"
 			parameter["format"] = "bytes"
-			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-MIN-WAL-SIZE")
+		
+			abstract = "This paramater defines the minimum size of the pg_xlog directory. pgx_log directory contains the WAL files."
+			default_value = ""
+			
+			if float(self.pg_version) >= 9.5:
+				default_value = "80MB"
+				
+			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-MIN-WAL-SIZE", abstract, default_value)
 
 			
 			if enviroment_name in [ "WEB", "Mixed" ]:
@@ -222,7 +282,14 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["min_version"] = 9.5
 			parameter["min_value"] = "1GB"
 			parameter["format"] = "bytes"
-			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-MAX-WAL-SIZE")
+		
+			abstract = "This paramater defines the maximun size of the pg_xlog directory. pgx_log directory contains the WAL files."
+			default_value = ""
+			
+			if float(self.pg_version) >= 9.5:
+				default_value = "1GB"
+				
+			parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-MAX-WAL-SIZE", abstract, default_value)
 			
 			if enviroment_name in [ "WEB", "Mixed" ]:
 				parameter["formula"] = 1610612736
@@ -239,7 +306,18 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter = {}
 		parameter["name"] = "checkpoint_completion_target"
 		parameter["format"] = "float"
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET")
+		
+		abstract = "This paramater defines a percentual of checkpoint_completion_time to write the CHECKPOINT data on the disk."
+		default_value = ""
+		
+		if float(self.pg_version) >= 9.1:
+			default_value = "0.5"
+			
+			
+		recomendation_posts = {}
+		recomendation_posts["Understaning postgresql.conf: CHECKPOINT_COMPLETION_TARGET"] = "https://www.depesz.com/2010/11/03/checkpoint_completion_target/"
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET", abstract, default_value, recomendation_posts)
 		
 		if enviroment_name ==  "WEB":
 			parameter["formula"] = 0.7
@@ -255,7 +333,15 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "wal_buffers"
 		parameter["format"] = "bytes"
 		parameter["max_value"] = "16MB"
-		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-WAL-BUFFERS")
+		
+		abstract = "This paramater defines a buffer to store WAL changes before write it in the WAL file."
+		default_value = ""
+		
+		if float(self.pg_version) >= 9.1:
+			default_value = "3% of shared_buffer or 64KB at the minimum"
+			
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-WAL-BUFFERS", abstract, default_value)
 		
 		if enviroment_name in [ "WEB", "OLTP", "DW", "Mixed" ]:
 			parameter["formula"] = "(TOTAL_RAM / 4 ) * 0.03"
