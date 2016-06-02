@@ -23,10 +23,7 @@ SYMBOLS = {
 
 def sizeof_fmt(num):
     for x in ['bytes','KB','MB','GB','TB']:
-        if num < 1024.0 :
-        
-            # return "%.1f%s" % (num, x)
-        
+        if num < 1024.0 :        
             if x in ('bytes', 'KB', 'MB') or num.is_integer():
                 return "%.0f%s" % (num, x)
             else:
