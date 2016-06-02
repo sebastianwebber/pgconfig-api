@@ -362,6 +362,34 @@ class TuningHandler(util.DefaultRequestHandler):
 		
 		return_output.append(category)
 		
+		
+		
+		##### Checkpoint Related Configuration
+		category = {}
+		category["category"] = "network_related"
+		category["description"] = "Network Related Configuration"
+		category["parameters"] = list()
+		
+		## listen_addresses
+		parameter = {}
+		parameter["name"] = "listen_addresses"
+		parameter["format"] = "string"
+		
+		abstract = "This parameter defines a network address to bind to."
+		default_value = ""
+		
+		if float(self.pg_version) >= 9.1:
+			default_value = "localhost"
+			
+		
+		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-connection.html#GUC-LISTEN-ADDRESSES", abstract, default_value)
+		
+		parameter["formula"] = "*"
+		
+		category["parameters"].append(parameter)
+		
+		return_output.append(category)
+		
 		return return_output
 		
 	def get_rules(self):
@@ -528,35 +556,35 @@ class TuningHandler(util.DefaultRequestHandler):
 			for parameter in category["parameters"]:
 			
 				formula = parameter["formula"]
-				
-				if isinstance(formula, str):
-					formula = formula.replace("TOTAL_RAM", str(total_ram))
-					formula = formula.replace("MAX_CONNECTIONS", str(max_connections))
 					
-				config_value = eval(str(formula))
+				if parameter["format"] != "string":
+					if isinstance(formula, str):
+						formula = formula.replace("TOTAL_RAM", str(total_ram))
+						formula = formula.replace("MAX_CONNECTIONS", str(max_connections))
+						
+					config_value = eval(str(formula))
 				
-				min_value = parameter.get("min_value", config_value)
-				max_value = parameter.get("max_value", config_value)
-				
-				# print min_value
-				# print max_value
-				
-				if parameter["format"] == "bytes":
-					if "b" in str(min_value).lower():
-						min_value = bytes.human2bytes(min_value)
+					min_value = parameter.get("min_value", config_value)
+					max_value = parameter.get("max_value", config_value)
 					
-				
-				parameter["config_value"] = config_value
-				
-				if config_value < min_value:
-					parameter["config_value"] = min_value
+					if parameter["format"] == "bytes":
+						if "b" in str(min_value).lower():
+							min_value = bytes.human2bytes(min_value)
+						
 					
-				if config_value > max_value:
-					parameter["config_value"] = max_value
-				
-				if parameter["format"] == "bytes":
-					config_value = parameter["config_value"]
-					parameter["config_value"] = bytes.sizeof_fmt(config_value)
+					parameter["config_value"] = config_value
+					
+					if config_value < min_value:
+						parameter["config_value"] = min_value
+						
+					if config_value > max_value:
+						parameter["config_value"] = max_value
+					
+					if parameter["format"] == "bytes":
+						config_value = parameter["config_value"]
+						parameter["config_value"] = bytes.sizeof_fmt(config_value)
+				else:
+					parameter["config_value"] = parameter["formula"]
 						
 				parameter.pop("doc_url", None)
 				parameter.pop("formula", None)
