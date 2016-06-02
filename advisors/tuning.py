@@ -15,7 +15,7 @@ class TuningHandler(util.DefaultRequestHandler):
 	def write_config(self, output_data):
 		for category in output_data:
 			self.write("# {}\n".format(category["description"]))
-			for parameter in category["paramaters"]:
+			for parameter in category["parameters"]:
 				config_value = parameter.get("config_value", "NI")
 				self.write(
 					"{} = {}\n".format(parameter["name"], config_value)
@@ -25,7 +25,7 @@ class TuningHandler(util.DefaultRequestHandler):
 	def write_alter_system(self, output_data):
 		for category in output_data:
 			self.write("-- {}\n".format(category["description"]))
-			for parameter in category["paramaters"]:
+			for parameter in category["parameters"]:
 				config_value = parameter.get("config_value", "NI")
 				self.write(
 					"ALTER SYSTEM SET {} TO '{}';\n".format(parameter["name"], config_value)
@@ -112,7 +112,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		category = {}
 		category["category"] = "memory_related"
 		category["description"] = "Memory Configuration"
-		category["paramaters"] = list()
+		category["parameters"] = list()
 	
 		## shared_buffers
 		parameter = {}
@@ -121,7 +121,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["format"] = "bytes"
 		
 		
-		abstract = "This paramater allocate memory slots, used by all process. Mainly works as the disk cache and its similar to oracle's SGA buffer."
+		abstract = "This parameter allocate memory slots, used by all process. Mainly works as the disk cache and its similar to oracle's SGA buffer."
 		default_value = ""
 		
 		if float(self.pg_version) in (9.1, 9.2):
@@ -137,14 +137,14 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "TOTAL_RAM / 4"
 		
-		category["paramaters"].append(parameter)
+		category["parameters"].append(parameter)
 		
 		## effective_cache_size
 		parameter = {}
 		parameter["name"] = "effective_cache_size"
 		parameter["format"] = "bytes"
 		
-		abstract = "This paramater does not allocate any resource, just tells to the query planner how much of the operating system cache are avaliable to use. Remember that shared_buffers needs to smaller than 8GB, then the query planner will prefer read the disk because it will be on memory."
+		abstract = "This parameter does not allocate any resource, just tells to the query planner how much of the operating system cache are avaliable to use. Remember that shared_buffers needs to smaller than 8GB, then the query planner will prefer read the disk because it will be on memory."
 		default_value = ""
 		
 		if float(self.pg_version) in (9.1, 9.2):
@@ -160,7 +160,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "(TOTAL_RAM / 4) * 3"
 		
-		category["paramaters"].append(parameter)
+		category["parameters"].append(parameter)
 		
 		## work_mem
 		parameter = {}
@@ -168,7 +168,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["min_value"] = "4MB"
 		parameter["format"] = "bytes"
 				
-		abstract = "This paramater defines how much a work_mem buffer can allocate. Each query can open many work_mem buffers when execute (normally one by subquery) if it uses any sort (or aggregate) operation. When work_mem its too small a temp file is created."
+		abstract = "This parameter defines how much a work_mem buffer can allocate. Each query can open many work_mem buffers when execute (normally one by subquery) if it uses any sort (or aggregate) operation. When work_mem its too small a temp file is created."
 		default_value = ""
 		
 		if float(self.pg_version) >= 9.1 and float(self.pg_version) <= 9.3:
@@ -186,7 +186,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "((TOTAL_RAM / 6) / MAX_CONNECTIONS)"
 		
-		category["paramaters"].append(parameter)
+		category["parameters"].append(parameter)
 		
 		## maintenance_work_mem
 		parameter = {}
@@ -194,7 +194,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["format"] = "bytes"
 		parameter["max_value"] = "2GB"
 		
-		abstract = "This paramater defines how much a maintenance operation (ALTER TABLE, VACUUM, REINDEX, AutoVACUUM worker, etc) buffer can use."
+		abstract = "This parameter defines how much a maintenance operation (ALTER TABLE, VACUUM, REINDEX, AutoVACUUM worker, etc) buffer can use."
 		default_value = ""
 		
 		if float(self.pg_version) >= 9.1 and float(self.pg_version) <= 9.3:
@@ -211,7 +211,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "(TOTAL_RAM / 16)"
 		
-		category["paramaters"].append(parameter)
+		category["parameters"].append(parameter)
 		
 		return_output.append(category)
 		
@@ -219,7 +219,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		category = {}
 		category["category"] = "checkpoint_related"
 		category["description"] = "Checkpoint Related Configuration"
-		category["paramaters"] = list()
+		category["parameters"] = list()
 		
 		## checkpoint_segments
 		if float(self.pg_version) >= 8.0 and float(self.pg_version) <= 9.4:
@@ -229,7 +229,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			# parameter["max_version"] = 9.4
 			parameter["format"] = "decimal"
 		
-			abstract = "This paramater defines how much WAL files can be stored before a automatic CHECKPOINT. All files are stored in the pg_xlog directory."
+			abstract = "This parameter defines how much WAL files can be stored before a automatic CHECKPOINT. All files are stored in the pg_xlog directory."
 			default_value = ""
 			
 			if float(self.pg_version) >= 9.1:
@@ -246,7 +246,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			else:
 				parameter["formula"] = 3
 			
-			category["paramaters"].append(parameter)
+			category["parameters"].append(parameter)
 		
 		## min_wal_size
 		if float(self.pg_version) >= 9.5:
@@ -256,7 +256,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["min_value"] = "80MB"
 			parameter["format"] = "bytes"
 		
-			abstract = "This paramater defines the minimum size of the pg_xlog directory. pgx_log directory contains the WAL files."
+			abstract = "This parameter defines the minimum size of the pg_xlog directory. pgx_log directory contains the WAL files."
 			default_value = ""
 			
 			if float(self.pg_version) >= 9.5:
@@ -274,7 +274,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			else:
 				parameter["formula"] = 2147483648
 			
-			category["paramaters"].append(parameter)
+			category["parameters"].append(parameter)
 			
 			## max_wal_size
 			parameter = {}
@@ -283,7 +283,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["min_value"] = "1GB"
 			parameter["format"] = "bytes"
 		
-			abstract = "This paramater defines the maximun size of the pg_xlog directory. pgx_log directory contains the WAL files."
+			abstract = "This parameter defines the maximun size of the pg_xlog directory. pgx_log directory contains the WAL files."
 			default_value = ""
 			
 			if float(self.pg_version) >= 9.5:
@@ -300,14 +300,14 @@ class TuningHandler(util.DefaultRequestHandler):
 			else:
 				parameter["formula"] = 1073741824
 			
-			category["paramaters"].append(parameter)
+			category["parameters"].append(parameter)
 		
 		## checkpoint_completion_target
 		parameter = {}
 		parameter["name"] = "checkpoint_completion_target"
 		parameter["format"] = "float"
 		
-		abstract = "This paramater defines a percentual of checkpoint_completion_time to write the CHECKPOINT data on the disk."
+		abstract = "This parameter defines a percentual of checkpoint_completion_time to write the CHECKPOINT data on the disk."
 		default_value = ""
 		
 		if float(self.pg_version) >= 9.1:
@@ -326,7 +326,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = 0.5
 		
-		category["paramaters"].append(parameter)
+		category["parameters"].append(parameter)
 		
 		## wal_buffers
 		parameter = {}
@@ -334,11 +334,11 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["format"] = "bytes"
 		parameter["max_value"] = "16MB"
 		
-		abstract = "This paramater defines a buffer to store WAL changes before write it in the WAL file."
+		abstract = "This parameter defines a buffer to store WAL changes before write it in the WAL file."
 		default_value = ""
 		
 		if float(self.pg_version) >= 9.1:
-			default_value = "3% of shared_buffer or 64KB at the minimum"
+			default_value = "3% of shared_buffers or 64KB at the minimum"
 			
 		
 		parameter["documentation"] = self._define_doc(parameter["name"], "runtime-config-wal.html#GUC-WAL-BUFFERS", abstract, default_value)
@@ -348,7 +348,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		else:
 			parameter["formula"] = "(TOTAL_RAM / 16 ) * 0.03"
 		
-		category["paramaters"].append(parameter)
+		category["parameters"].append(parameter)
 		
 		return_output.append(category)
 		
@@ -374,7 +374,7 @@ class TuningHandler(util.DefaultRequestHandler):
 				[{
 					"category": "memory_related",
 					"description": "Memory Configuration",
-					"paramaters": [{
+					"parameters": [{
 						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-resource.html#GUC-SHARED-BUFFERS",
 						"format": "bytes",
 						"formula": "TOTAL_RAM / 4",
@@ -400,7 +400,7 @@ class TuningHandler(util.DefaultRequestHandler):
 				}, {
 					"category": "checkpoint_related",
 					"description": "Checkpoint Related Configuration",
-					"paramaters": [{
+					"parameters": [{
 						"doc_url": "http://www.postgresql.org/docs/9.5/static/runtime-config-wal.html#GUC-MIN-WAL-SIZE",
 						"format": "bytes",
 						"formula": 536870912,
@@ -437,7 +437,7 @@ class TuningHandler(util.DefaultRequestHandler):
 
 
 		Returns
-			list of suggested paramaters
+			list of suggested parameters
 		Sample URL
 			::
 
@@ -451,7 +451,7 @@ class TuningHandler(util.DefaultRequestHandler):
 					"data": [{
 						"category": "memory_related",
 						"description": "Memory Configuration",
-						"paramaters": [{
+						"parameters": [{
 							"config_value": "2.00GB",
 							"name": "shared_buffers"
 						}, {
@@ -467,7 +467,7 @@ class TuningHandler(util.DefaultRequestHandler):
 					}, {
 						"category": "checkpoint_related",
 						"description": "Checkpoint Related Configuration",
-						"paramaters": [{
+						"parameters": [{
 							"config_value": "512.00MB",
 							"name": "min_wal_size"
 						}, {
@@ -515,7 +515,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		rule_list = self._get_rules(self.enviroment_name)
 		
 		for category in rule_list:
-			for parameter in category["paramaters"]:
+			for parameter in category["parameters"]:
 			
 				formula = parameter["formula"]
 				
@@ -573,7 +573,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		return rule_list
 		
         
-	# TODO: Create a method to display paramaters documentation
+	# TODO: Create a method to display parameters documentation
 	def get(self, slug=None):		
 		if slug == "get-config":
 			self.get_config()
