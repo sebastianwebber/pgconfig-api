@@ -559,15 +559,8 @@ class TuningHandler(util.DefaultRequestHandler):
 					parameter["config_value"] = max_value
 				
 				if parameter["format"] == "bytes":
-				
-					# from hurry.filesize import size,verbose,alternative
-				
 					config_value = parameter["config_value"]
-					# parameter["config_value_original"] = bytes.bytes2human(config_value)
 					parameter["config_value"] = bytes.sizeof_fmt(config_value)
-					# parameter["config_value_hurrysize"] = size(config_value, system=alternative)
-					# parameter["config_value_hurrysize_alternative"] = size(config_value, system=alternative)
-					# parameter["config_value_hurrysize_verbose"] = size(config_value, system=verbose)
 						
 				parameter.pop("doc_url", None)
 				parameter.pop("formula", None)
