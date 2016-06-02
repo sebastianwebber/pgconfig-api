@@ -307,7 +307,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter["name"] = "checkpoint_completion_target"
 		parameter["format"] = "float"
 		
-		abstract = "This parameter defines a percentual of checkpoint_completion_time to write the CHECKPOINT data on the disk."
+		abstract = "This parameter defines a percentual of checkpoint_completion_timeout as a target to write the CHECKPOINT data on the disk."
 		default_value = ""
 		
 		if float(self.pg_version) >= 9.1:
