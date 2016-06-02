@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import math
+
 """
 Bytes-to-human / human-to-bytes converter.
 Based on: http://goo.gl/kTQMs
@@ -21,8 +23,15 @@ SYMBOLS = {
 
 def sizeof_fmt(num):
     for x in ['bytes','KB','MB','GB','TB']:
-        if num < 1024.0:
-            return "%3.1f%s" % (num, x)
+        if num < 1024.0 :
+        
+            # return "%.1f%s" % (num, x)
+        
+            if x in ('bytes', 'KB', 'MB') or num.is_integer():
+                return "%.0f%s" % (num, x)
+            else:
+                return "%.1f%s" % (num, x)
+                
         num /= 1024.0
         
 def sizeof_fmt2(num, suffix='B'):
