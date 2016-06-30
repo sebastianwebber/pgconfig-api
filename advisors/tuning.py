@@ -571,8 +571,10 @@ class TuningHandler(util.DefaultRequestHandler):
 		rule_list = self._get_rules(self.enviroment_name)
 		
 		for category in rule_list:
-			for parameter in category["parameters"]:
+
 			
+			for parameter in category["parameters"]:
+				
 				formula = parameter["formula"]
 					
 				if parameter["format"] != "string":
@@ -584,10 +586,13 @@ class TuningHandler(util.DefaultRequestHandler):
 				
 					min_value = parameter.get("min_value", config_value)
 					max_value = parameter.get("max_value", config_value)
-					
+
 					if parameter["format"] == "bytes":
 						if "b" in str(min_value).lower():
 							min_value = bytes.human2bytes(min_value)
+
+						if "b" in str(max_value).lower():
+							max_value = bytes.human2bytes(max_value)
 						
 					
 					parameter["config_value"] = config_value
