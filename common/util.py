@@ -10,7 +10,31 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
 	def initialize(self):
 		self.default_format = self.get_argument("format", "json", True)
 		self.pg_version = self.get_argument("pg_version", 9.5, True)
+
+
 	
+	def write_config(self, output_data):
+
+		print output_data
+		for category in output_data:
+			self.write("# {}\n".format(category["description"]))
+			for parameter in category["parameters"]:
+				config_value = parameter.get("config_value", "NI")
+				self.write(
+					"{} = {}\n".format(parameter["name"], config_value)
+				)
+			self.write("\n")
+	
+	def write_alter_system(self, output_data):
+		for category in output_data:
+			self.write("-- {}\n".format(category["description"]))
+			for parameter in category["parameters"]:
+				config_value = parameter.get("config_value", "NI")
+				self.write(
+					"ALTER SYSTEM SET {} TO '{}';\n".format(parameter["name"], config_value)
+				)
+			self.write("\n")
+
 	def write_plain(self, message=list()):
 		if len(message) == 1:
 			self.write(message[0])
@@ -86,10 +110,16 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
 		else:
 			process_data = message
 
+		print type(process_data)
+
 		if self.default_format == "json":
 			self.write_json_api(message)	
 		elif self.default_format == "bash":
 			self.write_bash(message)
+		elif self.default_format == "conf":
+			self.write_config(message)
+		elif self.default_format == "alter_system":
+			self.write_alter_system(message)
 		else:
 			self.write_plain(message)
 	

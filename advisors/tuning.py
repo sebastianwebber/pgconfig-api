@@ -12,26 +12,6 @@ class TuningHandler(util.DefaultRequestHandler):
 		self.enviroment_name = self.get_argument("enviroment_name", "WEB", True)
 		self.show_doc = self.get_argument("show_doc", False, True)
 	
-	def write_config(self, output_data):
-		for category in output_data:
-			self.write("# {}\n".format(category["description"]))
-			for parameter in category["parameters"]:
-				config_value = parameter.get("config_value", "NI")
-				self.write(
-					"{} = {}\n".format(parameter["name"], config_value)
-				)
-			self.write("\n")
-	
-	def write_alter_system(self, output_data):
-		for category in output_data:
-			self.write("-- {}\n".format(category["description"]))
-			for parameter in category["parameters"]:
-				config_value = parameter.get("config_value", "NI")
-				self.write(
-					"ALTER SYSTEM SET {} TO '{}';\n".format(parameter["name"], config_value)
-				)
-			self.write("\n")
-	
 	def list_enviroments(self):
 
 		"""
