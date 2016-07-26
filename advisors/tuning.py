@@ -593,7 +593,7 @@ class TuningHandler(util.DefaultRequestHandler):
 				parameter.pop("formula", None)
 				parameter.pop("max_value", None)
 				parameter.pop("min_value", None)
-				parameter.pop("format", None)
+				# parameter.pop("format", None)
 				parameter.pop("min_version", None)
 				parameter.pop("max_version", None)
 				

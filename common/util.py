@@ -14,15 +14,19 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
 
 	
 	def write_config(self, output_data):
-
-		print output_data
 		for category in output_data:
 			self.write("# {}\n".format(category["description"]))
 			for parameter in category["parameters"]:
 				config_value = parameter.get("config_value", "NI")
+				value_format = parameter.get("format", "NONE")
+
+				if value_format in ("string", "time"):
+					config_value = "'{}'".format(config_value)
+
 				self.write(
 					"{} = {}\n".format(parameter["name"], config_value)
 				)
+			
 			self.write("\n")
 	
 	def write_alter_system(self, output_data):
