@@ -10,7 +10,7 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
     
     def initialize(self):
         self.default_format = self.get_argument("format", "json", True)
-        self.show_about = self.get_argument("show-about", True, True)
+        self.show_about = self.get_argument("show_about", True, True)
         self.pg_version = self.get_argument("pg_version", 9.5, True)
         self.version = "2.0 beta"
 

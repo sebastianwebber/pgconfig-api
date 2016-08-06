@@ -150,7 +150,7 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
 
     def get(self, slug=None):
         
-        self.log_format = self.get_argument("log-format", "stderr", True)
+        self.log_format = self.get_argument("log_format", "stderr", True)
 
         if slug == "get-config":
             self.get_config()
