@@ -1,6 +1,7 @@
 import tornado.web
 import json
 from tornado_cors import CorsMixin
+from common import ParameterFormat, EnumEncoder
 
 
 class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):	
@@ -23,13 +24,13 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
         self.write("{} http://pgconfig.org\n\n".format(default_comment*2))
    
     def write_parameter_comment(self, format_type, parameter_name, comment):
-       default_comment = "--"
+        default_comment = "--"
        
-       if format_type == "conf":
-           default_comment = "#"
+        if format_type == "conf":
+            default_comment = "#"
        
-       if comment != "NONE":
-           self.write("\n{} {}: {}\n".format(default_comment, parameter_name, comment))
+        if comment != "NONE":
+            self.write("\n{} {}: {}\n".format(default_comment, parameter_name, comment))
 
 
     def write_config(self, output_data):
@@ -39,9 +40,9 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
             self.write("# {}\n".format(category["description"]))
             for parameter in category["parameters"]:
                 config_value = parameter.get("config_value", "NI")
-                value_format = parameter.get("format", "NONE")
+                value_format = parameter.get("format", ParameterFormat.NONE)
 
-                if value_format in ("string", "time"):
+                if value_format in (ParameterFormat.String, ParameterFormat.Time):
                     config_value = "'{}'".format(config_value)
 
                 parameter_comment = parameter.get("comment", "NONE")
@@ -110,7 +111,7 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
         full_url = self.request.protocol + "://" + self.request.host + self.request.uri 
         _document["links"] = { "self" : full_url}
         
-        self.write( json.dumps(_document, sort_keys = True,separators=(',', ': ')))
+        self.write( json.dumps(_document, sort_keys = True, separators=(',', ': '), cls=EnumEncoder))
 
     def write_json(self, message=list()):
         self.set_header('Content-Type', 'application/json')
