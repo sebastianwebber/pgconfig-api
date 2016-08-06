@@ -2,8 +2,7 @@
 
 import tornado.web
 import json
-from common import util
-from common import bytes
+from common import util,bytes, ParameterFormat
 
 class TuningHandler(util.DefaultRequestHandler):
 	
@@ -98,7 +97,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter = {}
 		parameter["name"] = "shared_buffers"
 		parameter["max_value"] = "8GB"
-		parameter["format"] = "bytes"
+		parameter["format"] = ParameterFormat.Bytes
 		
 		recomendation_posts = {}
 		recomendation_posts["Tuning Your PostgreSQL Server"] = "https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server#shared_buffers"
@@ -125,7 +124,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		## effective_cache_size
 		parameter = {}
 		parameter["name"] = "effective_cache_size"
-		parameter["format"] = "bytes"
+		parameter["format"] = ParameterFormat.Bytes
 		
 		abstract = "This parameter does not allocate any resource, just tells to the query planner how much of the operating system cache are avaliable to use. Remember that shared_buffers needs to smaller than 8GB, then the query planner will prefer read the disk because it will be on memory."
 		default_value = ""
@@ -149,7 +148,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		parameter = {}
 		parameter["name"] = "work_mem"
 		parameter["min_value"] = "4MB"
-		parameter["format"] = "bytes"
+		parameter["format"] = ParameterFormat.Bytes
 				
 		abstract = "This parameter defines how much a work_mem buffer can allocate. Each query can open many work_mem buffers when execute (normally one by subquery) if it uses any sort (or aggregate) operation. When work_mem its too small a temp file is created."
 		default_value = ""
@@ -178,7 +177,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		## maintenance_work_mem
 		parameter = {}
 		parameter["name"] = "maintenance_work_mem"
-		parameter["format"] = "bytes"
+		parameter["format"] = ParameterFormat.Bytes
 		parameter["max_value"] = "2GB"
 		
 		abstract = "This parameter defines how much a maintenance operation (ALTER TABLE, VACUUM, REINDEX, AutoVACUUM worker, etc) buffer can use."
@@ -214,7 +213,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["name"] = "checkpoint_segments"
 			# parameter["min_version"] = 8.0
 			# parameter["max_version"] = 9.4
-			parameter["format"] = "decimal"
+			parameter["format"] = ParameterFormat.Decimal
 			
 			recomendation_posts = {}
 			recomendation_posts["WRITE AHEAD LOG + UNDERSTANDING POSTGRESQL.CONF: CHECKPOINT_SEGMENTS, CHECKPOINT_TIMEOUT and CHECKPOINT_WARNING"] = "https://www.depesz.com/2011/07/14/write-ahead-log-understanding-postgresql-conf-checkpoint_segments-checkpoint_timeout-checkpoint_warning/"
@@ -244,7 +243,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["name"] = "min_wal_size"
 			parameter["min_version"] = 9.5
 			parameter["min_value"] = "80MB"
-			parameter["format"] = "bytes"
+			parameter["format"] = ParameterFormat.Bytes
 		
 			abstract = "This parameter defines the minimum size of the pg_xlog directory. pgx_log directory contains the WAL files."
 			default_value = ""
@@ -271,7 +270,7 @@ class TuningHandler(util.DefaultRequestHandler):
 			parameter["name"] = "max_wal_size"
 			parameter["min_version"] = 9.5
 			parameter["min_value"] = "1GB"
-			parameter["format"] = "bytes"
+			parameter["format"] = ParameterFormat.Bytes
 		
 			abstract = "This parameter defines the maximun size of the pg_xlog directory. pgx_log directory contains the WAL files."
 			default_value = ""
@@ -295,7 +294,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		## checkpoint_completion_target
 		parameter = {}
 		parameter["name"] = "checkpoint_completion_target"
-		parameter["format"] = "float"
+		parameter["format"] = ParameterFormat.Float
 		
 		abstract = "This parameter defines a percentual of checkpoint_timeout as a target to write the CHECKPOINT data on the disk."
 		default_value = ""
@@ -321,7 +320,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		## wal_buffers
 		parameter = {}
 		parameter["name"] = "wal_buffers"
-		parameter["format"] = "bytes"
+		parameter["format"] = ParameterFormat.Bytes
 		parameter["max_value"] = "16MB"
 		
 		abstract = "This parameter defines a buffer to store WAL changes before write it in the WAL file."
@@ -353,7 +352,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		## listen_addresses
 		parameter = {}
 		parameter["name"] = "listen_addresses"
-		parameter["format"] = "string"
+		parameter["format"] = ParameterFormat.String
 		
 		abstract = "This parameter defines a network address to bind to."
 		default_value = ""
@@ -371,7 +370,7 @@ class TuningHandler(util.DefaultRequestHandler):
 		## max_connections
 		parameter = {}
 		parameter["name"] = "max_connections"
-		parameter["format"] = "integer"
+		parameter["format"] = ParameterFormat.Decimal
 		
 		abstract = "This parameter defines a max connections allowed."
 		default_value = ""
@@ -557,7 +556,7 @@ class TuningHandler(util.DefaultRequestHandler):
 				
 				formula = parameter["formula"]
 					
-				if parameter["format"] != "string":
+				if parameter["format"] != ParameterFormat.String:
 					if isinstance(formula, str):
 						formula = formula.replace("TOTAL_RAM", str(total_ram))
 						formula = formula.replace("MAX_CONNECTIONS", str(max_connections))
@@ -567,7 +566,7 @@ class TuningHandler(util.DefaultRequestHandler):
 					min_value = parameter.get("min_value", config_value)
 					max_value = parameter.get("max_value", config_value)
 
-					if parameter["format"] == "bytes":
+					if parameter["format"] == ParameterFormat.Bytes:
 						if "b" in str(min_value).lower():
 							min_value = bytes.human2bytes(min_value)
 
@@ -583,7 +582,7 @@ class TuningHandler(util.DefaultRequestHandler):
 					if config_value > max_value:
 						parameter["config_value"] = max_value
 					
-					if parameter["format"] == "bytes":
+					if parameter["format"] == ParameterFormat.Bytes:
 						config_value = parameter["config_value"]
 						parameter["config_value"] = bytes.sizeof_fmt(config_value)
 				else:
