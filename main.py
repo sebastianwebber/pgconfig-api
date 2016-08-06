@@ -4,7 +4,7 @@ import os
 import tornado.ioloop
 import tornado.web
 
-from generators import fdw
+from generators import fdw, native_replication, pgbadger
 from advisors import tuning
 
 class IndexHandler(tornado.web.RequestHandler):
@@ -24,7 +24,9 @@ API_PREFIX="/v1/"
 application = tornado.web.Application([
     (r"/", tornado.web.RedirectHandler, {"url": "/v1"}),
 	(r"/v1", IndexHandler),
-    (r"/v1/fdw/([^/]+)", fdw.FDWHandler),
+    (r"/v1/generators/fdw/([^/]+)", fdw.FDWHandler),
+    (r"/v1/generators/pgbadger/([^/]+)", pgbadger.PGBadgerConfigurationHandler),
+    (r"/v1/generators/native-replication/([^/]+)", native_replication.NativeReplicationHandler),
     (r"/v1/tuning/([^/]+)", tuning.TuningHandler),
 ], **settings)
 
