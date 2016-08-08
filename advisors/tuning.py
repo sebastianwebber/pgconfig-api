@@ -10,6 +10,10 @@ class TuningHandler(util.DefaultRequestHandler):
         super(TuningHandler, self).initialize()
         self.enviroment_name = self.get_argument("enviroment_name", "WEB", True)
         self.show_doc = self.get_argument("show_doc", False, True)
+
+
+    def get_all_environments(self):    
+        return [ "WEB", "OLTP", "DW", "Mixed", "Desktop" ]
     
     def list_enviroments(self):
 
@@ -50,7 +54,7 @@ class TuningHandler(util.DefaultRequestHandler):
             ::
 
         """
-        self.write_json_api([ "WEB", "OLTP", "DW", "Mixed", "Desktop" ]) 
+        self.write_json_api(self.get_all_environments()) 
 
 
     def _define_doc(self, parameter_name, doc_url, abstract = "", default_value = "", recomendations = {}):
@@ -543,17 +547,35 @@ class TuningHandler(util.DefaultRequestHandler):
         else:	
             self.write_json_api(message)
 
-    def _get_config(self):
+
+    def get_config_all_environments(self):
+        self.write_json_api(self._get_config_all_environments())
+
+    def _get_config_all_environments(self):
+        
+        all_rules = list()
+
+        for env_name in self.get_all_environments():
+            new_env = {}
+            new_env["environment"] = env_name
+            new_env["configuration"] = self._get_config(env_name)
+
+            all_rules.append(new_env)
+
+        return all_rules
+
+    def _get_config(self, environment_name):
         total_ram = bytes.human2bytes(self.get_argument("total_ram", "2GB", True))
         max_connections = self.get_argument("max_connections", 100, True)
     
-        rule_list = self._get_rules(self.enviroment_name)
+        if not environment_name:
+            environment_name = self.enviroment_name 
+
+
+        rule_list = self._get_rules(environment_name)
         
         for category in rule_list:
-
-            
             for parameter in category["parameters"]:
-                
                 formula = parameter["formula"]
                     
                 if parameter["format"] != ParameterFormat.String:
@@ -605,7 +627,9 @@ class TuningHandler(util.DefaultRequestHandler):
     # TODO: Create a method to display parameters documentation
     def get(self, slug=None):		
         if slug == "get-config":
-            self.get_config()
+            self.get_config()		
+        if slug == "get-config-all-environments":
+            self.get_config_all_environments()
         elif slug == "list-enviroments":
             self.list_enviroments()
         elif slug == "get-rules":
