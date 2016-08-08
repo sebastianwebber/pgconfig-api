@@ -142,6 +142,7 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
             parameter = {}
             parameter["name"] = "log_destination"
             parameter["config_value"] = self.log_format
+            parameter["format"] = ParameterFormat.String
             category["parameters"].append(parameter)
 
         return_data.append(category)
