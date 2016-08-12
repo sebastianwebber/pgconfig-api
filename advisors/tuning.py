@@ -564,11 +564,11 @@ class TuningHandler(util.DefaultRequestHandler):
 
         return all_rules
 
-    def _get_config(self, environment_name):
+    def _get_config(self, environment_name=None):
         total_ram = bytes.human2bytes(self.get_argument("total_ram", "2GB", True))
         max_connections = self.get_argument("max_connections", 100, True)
     
-        if not environment_name:
+        if environment_name is None:
             environment_name = self.enviroment_name 
 
 
@@ -627,12 +627,14 @@ class TuningHandler(util.DefaultRequestHandler):
     # TODO: Create a method to display parameters documentation
     def get(self, slug=None):		
         if slug == "get-config":
+            print 'wtf?'
             self.get_config()		
-        if slug == "get-config-all-environments":
+        elif slug == "get-config-all-environments":
             self.get_config_all_environments()
         elif slug == "list-enviroments":
             self.list_enviroments()
         elif slug == "get-rules":
             self.get_rules()
         else:
+            print slug
             raise tornado.web.HTTPError(404)
