@@ -627,7 +627,6 @@ class TuningHandler(util.DefaultRequestHandler):
     # TODO: Create a method to display parameters documentation
     def get(self, slug=None):		
         if slug == "get-config":
-            print 'wtf?'
             self.get_config()		
         elif slug == "get-config-all-environments":
             self.get_config_all_environments()
@@ -636,5 +635,4 @@ class TuningHandler(util.DefaultRequestHandler):
         elif slug == "get-rules":
             self.get_rules()
         else:
-            print slug
             raise tornado.web.HTTPError(404)

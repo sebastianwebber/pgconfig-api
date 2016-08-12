@@ -152,8 +152,6 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
         else:
             process_data = message
 
-        print type(process_data)
-
         if self.default_format == "json":
             self.write_json_api(message)	
         elif self.default_format == "bash":
