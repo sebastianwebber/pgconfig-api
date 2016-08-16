@@ -10,6 +10,7 @@ class TuningHandler(util.DefaultRequestHandler):
         super(TuningHandler, self).initialize()
         self.enviroment_name = self.get_argument("enviroment_name", "WEB", True)
         self.show_doc = self.get_argument("show_doc", False, True)
+        self.include_pgbadger = self.get_argument("include_pgbadger", None, True)
 
 
     def get_all_environments(self):    
@@ -564,13 +565,15 @@ class TuningHandler(util.DefaultRequestHandler):
 
         return all_rules
 
-    def _get_config(self, environment_name=None):
+    def _get_config(self, environment_name=None, include_pgbadger=None):
         total_ram = bytes.human2bytes(self.get_argument("total_ram", "2GB", True))
         max_connections = self.get_argument("max_connections", 100, True)
     
         if environment_name is None:
-            environment_name = self.enviroment_name 
+            environment_name = self.enviroment_name
 
+        if include_pgbadger is None:
+            include_pgbadger = self.include_pgbadger 
 
         rule_list = self._get_rules(environment_name)
         
@@ -620,6 +623,13 @@ class TuningHandler(util.DefaultRequestHandler):
                 
                 if not self.show_doc:
                     parameter.pop("documentation", None)
+
+        if include_pgbadger:
+            from generators.pgbadger import PGBadgerConfigurationHandler
+
+            handler = PGBadgerConfigurationHandler(self.application, self.request)
+            for category in handler._get_config():
+                rule_list.append(category)
 
         return rule_list
         

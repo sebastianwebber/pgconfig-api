@@ -4,19 +4,23 @@ from common import ParameterFormat, util
 
 
 class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
-
     """
     Implements a PGBadger Configuration Generator
     """
 
-    def get_config(self):
+    def initialize(self, format_name=None):
+        super(PGBadgerConfigurationHandler, self).initialize()
+        self.log_format = self.get_argument(
+            "log_format", "stderr",
+            True) if format_name is None else format_name
+
+    def _get_config(self):
 
         return_data = list()
         category = {}
         category["category"] = "log_config"
         category["description"] = "Logging configuration for pgbadger"
         category["parameters"] = list()
-
 
         ## logging_collector
         parameter = {}
@@ -60,7 +64,6 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
         parameter["config_value"] = "0"
         category["parameters"].append(parameter)
 
-
         ## lc_messages
         parameter = {}
         parameter["name"] = "lc_messages"
@@ -75,7 +78,7 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
         parameter["format"] = ParameterFormat.Time
         parameter["comment"] = "Adjust the minimum time to collect data"
         category["parameters"].append(parameter)
-        
+
         ## log_autovacuum_min_duration
         parameter = {}
         parameter["name"] = "log_autovacuum_min_duration"
@@ -85,10 +88,10 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
 
         return_data.append(category)
 
-
         category = {}
         category["category"] = "{}_config".format(self.log_format)
-        category["description"] = "'{}' format configuration".format(self.log_format)
+        category["description"] = "'{}' format configuration".format(
+            self.log_format)
         category["parameters"] = list()
 
         if self.log_format == "stderr":
@@ -102,7 +105,8 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
             ## log_line_preffix
             parameter = {}
             parameter["name"] = "log_line_preffix"
-            parameter["config_value"] = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
+            parameter[
+                "config_value"] = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
             parameter["format"] = ParameterFormat.String
             category["parameters"].append(parameter)
 
@@ -135,8 +139,6 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
             parameter["format"] = ParameterFormat.String
             category["parameters"].append(parameter)
 
-
-
         elif self.log_format == "csvlog":
             ## log_destination
             parameter = {}
@@ -147,11 +149,12 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
 
         return_data.append(category)
 
-        self.return_output(return_data)
+        return return_data
+
+    def get_config(self):
+        self.return_output(self._get_config())
 
     def get(self, slug=None):
-        
-        self.log_format = self.get_argument("log_format", "stderr", True)
 
         if slug == "get-config":
             self.get_config()
