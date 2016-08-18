@@ -102,9 +102,9 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
             parameter["format"] = ParameterFormat.String
             category["parameters"].append(parameter)
 
-            ## log_line_preffix
+            ## log_line_prefix
             parameter = {}
-            parameter["name"] = "log_line_preffix"
+            parameter["name"] = "log_line_prefix"
             parameter[
                 "config_value"] = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
             parameter["format"] = ParameterFormat.String
