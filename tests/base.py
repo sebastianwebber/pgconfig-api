@@ -1,8 +1,10 @@
-import imp
+import main
 import tornado.testing
+import tornado.ioloop
+import tornado.web
 
 
 class DefaultTestCase(tornado.testing.AsyncHTTPTestCase):
     def get_app(self):
-        app = imp.load_source('application', 'main.py')
-        return app
+        app = main.MainAPI()
+        return app.get_app()
