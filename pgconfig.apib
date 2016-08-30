@@ -1,0 +1,270 @@
+FORMAT: 1A
+HOST: http://api.pgconfig.org/v1/
+
+# PGConfig API
+
+This page contains the PGConfig API documentation.
+
+## Tuning Advisor [/tuning/get-config{?env_name,format,max_connections,pg_version,total_ram,show_doc}]
+
+### /tuning/get-config [GET]
+
++ Parameters
+    + env_name (enum[string],optional)
+    
+        Changes de environment
+        
+        + Default: `OLTP`
+        + Members
+            + `WEB`
+            + `OLTP`
+            + `DW`
+            + `Mixed`
+            + `Desktop`
+    + format (enum[string],optional)
+
+        Changes de default output
+        
+        + Default: `json`
+
+        + Members
+            + `json`
+            + `conf`
+            + `alter_system`
+    + max_connections (integer,optional)
+
+        Changes de max connection value
+        
+        + Default: `100`
+    + pg_version (enum[float],optional)
+
+        Changes de default PostgreSQL version
+        
+        + Default: `9.5`
+        + Members
+            + `9.1`
+            + `9.2`
+            + `9.3`
+            + `9.4`
+            + `9.5`
+    + total_ram (string,optional)
+
+        Changes the total memory avaliable to the PostgreSQL server
+        
+        + Default: `2GB`
+    + show_doc (bool,optional)
+
+        Show parameter documentation
+        
+        + Default: `false`
+
+
++ Response 200 (application/vnd.api+json)
+
+        {
+           "data":[
+              {
+                 "category":"memory_related",
+                 "description":"Memory Configuration",
+                 "parameters":[
+                    {
+                       "config_value":"512MB",
+                       "format":"Bytes",
+                       "name":"shared_buffers"
+                    },
+                    {
+                       "config_value":"2GB",
+                       "format":"Bytes",
+                       "name":"effective_cache_size"
+                    },
+                    {
+                       "config_value":"20MB",
+                       "format":"Bytes",
+                       "name":"work_mem"
+                    },
+                    {
+                       "config_value":"128MB",
+                       "format":"Bytes",
+                       "name":"maintenance_work_mem"
+                    }
+                 ]
+              },
+              {
+                 "category":"checkpoint_related",
+                 "description":"Checkpoint Related Configuration",
+                 "parameters":[
+                    {
+                       "config_value":"512MB",
+                       "format":"Bytes",
+                       "name":"min_wal_size"
+                    },
+                    {
+                       "config_value":"2GB",
+                       "format":"Bytes",
+                       "name":"max_wal_size"
+                    },
+                    {
+                       "config_value":0.7,
+                       "format":"Float",
+                       "name":"checkpoint_completion_target"
+                    },
+                    {
+                       "config_value":"15MB",
+                       "format":"Bytes",
+                       "name":"wal_buffers"
+                    }
+                 ]
+              },
+              {
+                 "category":"network_related",
+                 "description":"Network Related Configuration",
+                 "parameters":[
+                    {
+                       "config_value":"*",
+                       "format":"String",
+                       "name":"listen_addresses"
+                    },
+                    {
+                       "config_value":100,
+                       "format":"Decimal",
+                       "name":"max_connections"
+                    }
+                 ]
+              }
+           ],
+           "jsonapi":{
+              "version":"1.0"
+           },
+           "links":{
+              "self":"http://api.pgconfig.org/v1/tuning/get-config?&format=json&max_connections=100&pg_version=9.5&total_ram=2GB"
+           },
+           "meta":{
+              "arguments":{
+                 "format":[
+                    "json"
+                 ],
+                 "max_connections":[
+                    "100"
+                 ],
+                 "pg_version":[
+                    "9.5"
+                 ],
+                 "total_ram":[
+                    "2GB"
+                 ]
+              },
+              "copyright":"PGConfig API",
+              "version":"2.0 beta"
+           }
+        }
+
+## PGBadger Generator [/generators/pgbadger/get-config{?format,log_format}]
+
+### /generators/pgbadger/get-config [GET]
+
++ Parameters
+    + format (enum[string],optional)
+
+        Changes de default output
+        
+        + Default: `json`
+
+        + Members
+            + `json`
+            + `conf`
+            + `alter_system`
+    + log_format (enum[string],optional)
+
+        Changes de default log format
+        
+        + Default: `stderr`
+
+        + Members
+            + `stderr`
+            + `csvlog`
+            + `syslog`
+
++ Response 200 (application/vnd.api+json)
+
+        {
+           "data":[
+              {
+                 "category":"log_config",
+                 "description":"Logging configuration for pgbadger",
+                 "parameters":[
+                    {
+                       "config_value":"on",
+                       "name":"logging_collector"
+                    },
+                    {
+                       "config_value":"on",
+                       "name":"log_checkpoints"
+                    },
+                    {
+                       "config_value":"on",
+                       "name":"log_connections"
+                    },
+                    {
+                       "config_value":"on",
+                       "name":"log_connections"
+                    },
+                    {
+                       "config_value":"on",
+                       "name":"log_disconnections"
+                    },
+                    {
+                       "config_value":"on",
+                       "name":"log_lock_waits"
+                    },
+                    {
+                       "config_value":"0",
+                       "name":"log_temp_files"
+                    },
+                    {
+                       "config_value":"C",
+                       "format":"String",
+                       "name":"lc_messages"
+                    },
+                    {
+                       "comment":"Adjust the minimum time to collect data",
+                       "config_value":"10s",
+                       "format":"Time",
+                       "name":"log_min_duration_statement"
+                    },
+                    {
+                       "config_value":"0",
+                       "name":"log_autovacuum_min_duration"
+                    }
+                 ]
+              },
+              {
+                 "category":"stderr_config",
+                 "description":"'stderr' format configuration",
+                 "parameters":[
+                    {
+                       "config_value":"stderr",
+                       "format":"String",
+                       "name":"log_destination"
+                    },
+                    {
+                       "config_value":"%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h ",
+                       "format":"String",
+                       "name":"log_line_preffix"
+                    }
+                 ]
+              }
+           ],
+           "jsonapi":{
+              "version":"1.0"
+           },
+           "links":{
+              "self":"http://api.pgconfig.org/v1/generators/pgbadger/get-config"
+           },
+           "meta":{
+              "arguments":{
+        
+              },
+              "copyright":"PGConfig API",
+              "version":"2.0 beta"
+           }
+        }
