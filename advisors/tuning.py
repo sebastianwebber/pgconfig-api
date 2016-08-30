@@ -100,7 +100,7 @@ class TuningHandler(util.DefaultRequestHandler):
 
         return_output = list()
 
-        ##### Memory Related
+        # ---> Memory Related
         category = {}
         category["category"] = "memory_related"
         category["description"] = "Memory Configuration"

@@ -2,8 +2,6 @@ import unittest
 import tornado.testing
 import tests.base
 
-# from generators import pgbadger
-
 
 class PGBadgerTestCase(tests.base.DefaultTestCase):
     def test_conf_stderr(self):
@@ -40,7 +38,6 @@ class PGBadgerTestCase(tests.base.DefaultTestCase):
                          diff)
 
     def get_config(self):
-
         test_data = dict()
 
         for parameter_format in ['conf', 'alter_system']:
