@@ -279,6 +279,10 @@ class TuningHandler(util.DefaultRequestHandler):
             parameter["min_value"] = "80MB"
             parameter["format"] = ParameterFormat.Bytes
 
+            recomendation_posts = {}
+            recomendation_posts[
+                "Configuration changes in 9.5: transaction log size"] = "http://www.databasesoup.com/2016/01/configuration-changes-in-95-transaction.html"
+
             abstract = "This parameter defines the minimum size of the pg_xlog directory. pgx_log directory contains the WAL files."
             default_value = ""
 
@@ -287,7 +291,7 @@ class TuningHandler(util.DefaultRequestHandler):
 
             parameter["documentation"] = self._define_doc(
                 parameter["name"], "runtime-config-wal.html#GUC-MIN-WAL-SIZE",
-                abstract, default_value)
+                abstract, default_value, recomendation_posts)
 
             if enviroment_name in ["WEB", "Mixed"]:
                 parameter["formula"] = 536870912
