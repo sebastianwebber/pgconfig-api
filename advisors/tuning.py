@@ -10,6 +10,8 @@ class TuningHandler(util.DefaultRequestHandler):
         super(TuningHandler, self).initialize()
         self.enviroment_name = self.get_argument("enviroment_name", "WEB",
                                                  True)
+        self.os_type = self.get_argument("os_type", "Linux",
+                                                 True)
         self.show_doc = self.get_argument("show_doc", False, True)
         self.include_pgbadger = self.get_argument("include_pgbadger", None,
                                                   True)
@@ -109,7 +111,12 @@ class TuningHandler(util.DefaultRequestHandler):
         ## shared_buffers
         parameter = {}
         parameter["name"] = "shared_buffers"
-        parameter["max_value"] = "8GB"
+
+
+        if self.os_type == "Windows":
+            parameter["max_value"] = "512MB"
+        else:
+            parameter["max_value"] = "8GB"
         parameter["format"] = ParameterFormat.Bytes
 
         recomendation_posts = {}
@@ -198,7 +205,7 @@ class TuningHandler(util.DefaultRequestHandler):
         parameter = {}
         parameter["name"] = "maintenance_work_mem"
         parameter["format"] = ParameterFormat.Bytes
-        parameter["max_value"] = "2GB"
+        parameter["max_value"] = "2047MB"
 
         abstract = "This parameter defines how much a maintenance operation (ALTER TABLE, VACUUM, REINDEX, AutoVACUUM worker, etc) buffer can use."
         default_value = ""
