@@ -229,9 +229,7 @@ class TuningHandler(util.DefaultRequestHandler):
             "runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM", abstract,
             default_value)
 
-        if enviroment_name in ["WEB", "OLTP"]:
-            parameter["formula"] = "(TOTAL_RAM / 16)"
-        elif enviroment_name == "DW":
+        if enviroment_name == "DW":
             parameter["formula"] = "(TOTAL_RAM / 8)"
         else:
             parameter["formula"] = "(TOTAL_RAM / 16)"
