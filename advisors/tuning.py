@@ -12,6 +12,8 @@ class TuningHandler(util.DefaultRequestHandler):
                                                  True)
         self.os_type = self.get_argument("os_type", "Linux",
                                                  True)
+        self.arch = self.get_argument("arch", "x86-64",
+                                                 True)
         self.show_doc = self.get_argument("show_doc", False, True)
         self.include_pgbadger = self.get_argument("include_pgbadger", None,
                                                   True)
@@ -98,6 +100,13 @@ class TuningHandler(util.DefaultRequestHandler):
 
         return doc_stuff
 
+
+    def set_max_value(self, new_value):
+        if self.arch == "x86-64":
+            return new_value
+        else:
+            return "2047MB"
+
     def _get_rules(self, enviroment_name):
 
         return_output = list()
@@ -114,9 +123,9 @@ class TuningHandler(util.DefaultRequestHandler):
 
 
         if self.os_type == "Windows":
-            parameter["max_value"] = "512MB"
+            parameter["max_value"] = self.set_max_value("512MB")
         else:
-            parameter["max_value"] = "8GB"
+            parameter["max_value"] = self.set_max_value("8GB")
         parameter["format"] = ParameterFormat.Bytes
 
         recomendation_posts = {}
@@ -205,7 +214,7 @@ class TuningHandler(util.DefaultRequestHandler):
         parameter = {}
         parameter["name"] = "maintenance_work_mem"
         parameter["format"] = ParameterFormat.Bytes
-        parameter["max_value"] = "2047MB"
+        parameter["max_value"] = self.set_max_value("2GB")
 
         abstract = "This parameter defines how much a maintenance operation (ALTER TABLE, VACUUM, REINDEX, AutoVACUUM worker, etc) buffer can use."
         default_value = ""
@@ -365,7 +374,7 @@ class TuningHandler(util.DefaultRequestHandler):
         parameter = {}
         parameter["name"] = "wal_buffers"
         parameter["format"] = ParameterFormat.Bytes
-        parameter["max_value"] = "16MB"
+        parameter["max_value"] = self.set_max_value("16MB")
 
         abstract = "This parameter defines a buffer to store WAL changes before write it in the WAL file."
         default_value = ""
