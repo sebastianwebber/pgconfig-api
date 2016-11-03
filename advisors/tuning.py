@@ -270,11 +270,11 @@ class TuningHandler(util.DefaultRequestHandler):
             if enviroment_name in ["WEB", "Mixed"]:
                 parameter["formula"] = 32
             elif enviroment_name == "OLTP":
-                parameter["formula"] = 64
+                parameter["formula"] = 96
             elif enviroment_name == "DW":
-                parameter["formula"] = 128
+                parameter["formula"] = 256
             else:
-                parameter["formula"] = 3
+                parameter["formula"] = 16
 
             category["parameters"].append(parameter)
 
