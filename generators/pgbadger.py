@@ -40,12 +40,6 @@ class PGBadgerConfigurationHandler(util.GeneratorRequestHandler):
         parameter["config_value"] = "on"
         category["parameters"].append(parameter)
 
-        ## log_connections
-        parameter = {}
-        parameter["name"] = "log_connections"
-        parameter["config_value"] = "on"
-        category["parameters"].append(parameter)
-
         ## log_disconnections
         parameter = {}
         parameter["name"] = "log_disconnections"
