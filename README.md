@@ -160,71 +160,71 @@ In short: to change the output, all you need is to do it's puting the parameters
 The list below lists the available parameters:
 
 <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Parameter</th>
-                <th>Possible values</th>
-                <th>Default Value</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><code>pg_version</code></td>
-                <td>from <code>9.0</code> version until <code>9.6</code></td>
-                <td><code>9.6</code></td>
-                <td>Sets the PostgreSQL version</td>
-            </tr>
-            <tr>
-                <td><code>total_ram</code></td>
-                <td>any value above <code>1GB</code></td>
-                <td><code>2GB</code></td>
-                <td>Total memory <strong>dedicated</strong> to the PostgreSQL.</td>
-            </tr>
-            <tr>
-                <td><code>max_connections</code></td>
-                <td>any value above <code>1</code></td>
-                <td><code>100</code></td>
-                <td><strong>expected</strong> number of connections</td>
-            </tr>
-            <tr>
-                <td><code>env_name</code></td>
-                <td><code>WEB</code>, <code>OLTP</code>, <code>DW</code>, <code>Mixed</code> and <code>Desktop</code></td>
-                <td><code>WEB</code></td>
-                <td>Sets the environment that the server will run (more details below)</td>
-            </tr>
-            <tr>
-                <td><code>os_type</code></td>
-                <td><code>Linux</code>, <code>Windows</code> and <code>Unix</code></td>
-                <td><code>Linux</code></td>
-                <td>Sets the type of operating system used</td>
-            </tr>
-            <tr>
-                <td><code>arch</code></td>
-                <td><code>x86-64</code> and <code>i686</code></td>
-                <td><code>x86-64</code></td>
-                <td>Sets the server architecture</td>
-            </tr>
-            <tr>
-                <td><code>format</code></td>
-                <td><code>json</code>, <code>conf</code> and <code>alter_system</code></td>
-                <td><code>json</code></td>
-                <td>changes the output format</td>
-            </tr>
-            <tr>
-                <td><code>show_doc</code></td>
-                <td><code>true</code> and <code>false</code></td>
-                <td><code>false</code></td>
-                <td>Shows the documentation (valid only for the <code>json</code> format)</td>
-            </tr>
-            <tr>
-                <td><code>include_pgbadger</code></td>
-                <td><code>true</code> and <code>false</code></td>
-                <td><code>false</code></td>
-                <td>Add the settings to enable pgbadger</td>
-            </tr>
-        </tbody>
-    </table>
+    <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Possible values</th>
+            <th>Default Value</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>pg_version</code></td>
+            <td>from <code>9.0</code> version until <code>9.6</code></td>
+            <td><code>9.6</code></td>
+            <td>Sets the PostgreSQL version</td>
+        </tr>
+        <tr>
+            <td><code>total_ram</code></td>
+            <td>any value above <code>1GB</code></td>
+            <td><code>2GB</code></td>
+            <td>Total memory <strong>dedicated</strong> to the PostgreSQL.</td>
+        </tr>
+        <tr>
+            <td><code>max_connections</code></td>
+            <td>any value above <code>1</code></td>
+            <td><code>100</code></td>
+            <td><strong>expected</strong> number of connections</td>
+        </tr>
+        <tr>
+            <td><code>env_name</code></td>
+            <td><code>WEB</code>, <code>OLTP</code>, <code>DW</code>, <code>Mixed</code> and <code>Desktop</code></td>
+            <td><code>WEB</code></td>
+            <td>Sets the environment that the server will run (more details below)</td>
+        </tr>
+        <tr>
+            <td><code>os_type</code></td>
+            <td><code>Linux</code>, <code>Windows</code> and <code>Unix</code></td>
+            <td><code>Linux</code></td>
+            <td>Sets the type of operating system used</td>
+        </tr>
+        <tr>
+            <td><code>arch</code></td>
+            <td><code>x86-64</code> and <code>i686</code></td>
+            <td><code>x86-64</code></td>
+            <td>Sets the server architecture</td>
+        </tr>
+        <tr>
+            <td><code>format</code></td>
+            <td><code>json</code>, <code>conf</code> and <code>alter_system</code></td>
+            <td><code>json</code></td>
+            <td>changes the output format</td>
+        </tr>
+        <tr>
+            <td><code>show_doc</code></td>
+            <td><code>true</code> and <code>false</code></td>
+            <td><code>false</code></td>
+            <td>Shows the documentation (valid only for the <code>json</code> format)</td>
+        </tr>
+        <tr>
+            <td><code>include_pgbadger</code></td>
+            <td><code>true</code> and <code>false</code></td>
+            <td><code>false</code></td>
+            <td>Add the settings to enable pgbadger</td>
+        </tr>
+    </tbody>
+</table>
 
 > **Important** Don't forget, when setting the `total_ram` parameter, set the value like the expression `[0-9]{1,}GB`, eg: `4GB`.
 
