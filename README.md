@@ -188,7 +188,7 @@ The list below lists the available parameters:
             <td><strong>expected</strong> number of connections</td>
         </tr>
         <tr>
-            <td><code>env_name</code></td>
+            <td><code>environment_name</code></td>
             <td><code>WEB</code>, <code>OLTP</code>, <code>DW</code>, <code>Mixed</code> and <code>Desktop</code></td>
             <td><code>WEB</code></td>
             <td>Sets the environment that the server will run (more details below)</td>
@@ -275,7 +275,7 @@ The list below explains a bit more about the environments:
 The example below its used by the `UI`:
 
 ```bash
-$ curl 'https://api.pgconfig.org/v1/tuning/get-config?env_name=WEB&format=alter_system&include_pgbadger=true&log_format=stderr&max_connections=100&pg_version=9.6&total_ram=2GB'
+$ curl 'https://api.pgconfig.org/v1/tuning/get-config?environment_name=WEB&format=alter_system&include_pgbadger=true&log_format=stderr&max_connections=100&pg_version=9.6&total_ram=2GB'
 ```
 
 ### How the values are calculated?
@@ -284,7 +284,7 @@ In an attempt to make the process simpler, i created a API context to list the r
 
 - [/v1/tuning/get-rules](https://api.pgconfig.org/v1/tuning/get-rules) 
 
-> **Important:** This context supports the follow parameters: `os_type`, `arch` e `env_name`. 
+> **Important:** This context supports the follow parameters: `os_type`, `arch` e `environment_name`. 
 
 The fields who contains details how each parameter are calculated are `formula` and `max_value`, eg:
 
@@ -304,7 +304,7 @@ The fields who contains details how each parameter are calculated are `formula` 
 I recommend that you open the URL below on the browser for easy viewing (or just [format the json](https://jsonformatter.curiousconcept.com/)):
 
 ```bash
-curl 'https://api.pgconfig.org/v1/tuning/get-rules?os_type=Windows&arch=i686&env_name=OLTP'
+curl 'https://api.pgconfig.org/v1/tuning/get-rules?os_type=Windows&arch=i686&environment_name=OLTP'
 ```
 
 ### Another API Options
@@ -347,7 +347,7 @@ curl 'https://api.pgconfig.org/v1/tuning/get-rules?os_type=Windows&arch=i686&env
 ...</pre></td>
         </tr>
         <tr>
-            <td><a href="https://api.pgconfig.org/v1/tuning/list-enviroments"><code>/v1/tuning/list-enviroments</code></a></td>
+            <td><a href="https://api.pgconfig.org/v1/tuning/list-environments"><code>/v1/tuning/list-environments</code></a></td>
             <td>Show all environments</td>
             <td><pre><code class="language-json"></code>...
 "data": [
