@@ -223,6 +223,12 @@ The list below lists the available parameters:
             <td><code>false</code></td>
             <td>Add the settings to enable pgbadger</td>
         </tr>
+        <tr>
+            <td><code>log_format</code></td>
+            <td><code>stderr</code>, <code>csvlog</code> and <code>syslog</code></td>
+            <td><code>stderr</code></td>
+            <td>Sets de default log format for the pgbadger.</td>
+        </tr>
     </tbody>
 </table>
 
