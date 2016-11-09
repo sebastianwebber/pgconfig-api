@@ -227,7 +227,7 @@ The list below lists the available parameters:
             <td><code>log_format</code></td>
             <td><code>stderr</code>, <code>csvlog</code> and <code>syslog</code></td>
             <td><code>stderr</code></td>
-            <td>Sets de default log format for the pgbadger. (Used only when `include_pgbadger` is `true`)</td>
+            <td>Sets de default log format for the pgbadger. (Used only when <code>include_pgbadger</code> is <code>true</code>)</td>
         </tr>
     </tbody>
 </table>
