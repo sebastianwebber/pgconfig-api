@@ -1,4 +1,5 @@
 # PGConfig API
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg?style=flat-square&maxAge=2592000)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L2MUTTNAQ57KN)
 
 This project it's API that [pgconfig.org](http://pgconfig.org) uses to calculate the tuning values and stuff.
 
