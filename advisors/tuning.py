@@ -8,7 +8,7 @@ from common import util, bytes, ParameterFormat
 class TuningHandler(util.DefaultRequestHandler):
     def initialize(self):
         super(TuningHandler, self).initialize()
-        self.enviroment_name = self.get_argument("enviroment_name", "WEB",
+        self.environment_name = self.get_argument("environment_name", "WEB",
                                                  True)
         self.os_type = self.get_argument("os_type", "Linux",
                                                  True)
@@ -21,7 +21,7 @@ class TuningHandler(util.DefaultRequestHandler):
     def get_all_environments(self):
         return ["WEB", "OLTP", "DW", "Mixed", "Desktop"]
 
-    def list_enviroments(self):
+    def list_environments(self):
         """
         **Get a list of the proposed environments**
 
@@ -31,7 +31,7 @@ class TuningHandler(util.DefaultRequestHandler):
         Sample URL
             ::
 
-                /v1/tuning/list-enviroments
+                /v1/tuning/list-environments
             ::
 
         Sample output
@@ -49,7 +49,7 @@ class TuningHandler(util.DefaultRequestHandler):
                         "version": "1.0"
                     },
                     "links": {
-                        "self": "http://api.pgconfig.org/v1/tuning/list-enviroments"
+                        "self": "http://api.pgconfig.org/v1/tuning/list-environments"
                     },
                     "meta": {
                         "copyright": "PGConfig API",
@@ -107,7 +107,7 @@ class TuningHandler(util.DefaultRequestHandler):
         else:
             return "2047MB"
 
-    def _get_rules(self, enviroment_name):
+    def _get_rules(self, environment_name):
 
         return_output = list()
 
@@ -147,7 +147,7 @@ class TuningHandler(util.DefaultRequestHandler):
             "runtime-config-resource.html#GUC-SHARED-BUFFERS", abstract,
             default_value, recomendation_posts)
 
-        if enviroment_name == "Desktop":
+        if environment_name == "Desktop":
             parameter["formula"] = "TOTAL_RAM / 16"
         else:
             parameter["formula"] = "TOTAL_RAM / 4"
@@ -172,7 +172,7 @@ class TuningHandler(util.DefaultRequestHandler):
             "runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE", abstract,
             default_value)
 
-        if enviroment_name == "Desktop":
+        if environment_name == "Desktop":
             parameter["formula"] = "TOTAL_RAM / 4"
         else:
             parameter["formula"] = "(TOTAL_RAM / 4) * 3"
@@ -201,9 +201,9 @@ class TuningHandler(util.DefaultRequestHandler):
             parameter["name"], "runtime-config-resource.html#GUC-WORK-MEM",
             abstract, default_value, recomendation_posts)
 
-        if enviroment_name in ["WEB", "OLTP"]:
+        if environment_name in ["WEB", "OLTP"]:
             parameter["formula"] = "(TOTAL_RAM / MAX_CONNECTIONS)"
-        elif enviroment_name in ["DW", "Mixed"]:
+        elif environment_name in ["DW", "Mixed"]:
             parameter["formula"] = "((TOTAL_RAM / 2) / MAX_CONNECTIONS)"
         else:
             parameter["formula"] = "((TOTAL_RAM / 6) / MAX_CONNECTIONS)"
@@ -229,7 +229,7 @@ class TuningHandler(util.DefaultRequestHandler):
             "runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM", abstract,
             default_value)
 
-        if enviroment_name == "DW":
+        if environment_name == "DW":
             parameter["formula"] = "(TOTAL_RAM / 8)"
         else:
             parameter["formula"] = "(TOTAL_RAM / 16)"
@@ -267,11 +267,11 @@ class TuningHandler(util.DefaultRequestHandler):
                 "runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS", abstract,
                 default_value, recomendation_posts)
 
-            if enviroment_name in ["WEB", "Mixed"]:
+            if environment_name in ["WEB", "Mixed"]:
                 parameter["formula"] = 32
-            elif enviroment_name == "OLTP":
+            elif environment_name == "OLTP":
                 parameter["formula"] = 96
-            elif enviroment_name == "DW":
+            elif environment_name == "DW":
                 parameter["formula"] = 256
             else:
                 parameter["formula"] = 16
@@ -300,11 +300,11 @@ class TuningHandler(util.DefaultRequestHandler):
                 parameter["name"], "runtime-config-wal.html#GUC-MIN-WAL-SIZE",
                 abstract, default_value, recomendation_posts)
 
-            if enviroment_name in ["WEB", "Mixed"]:
+            if environment_name in ["WEB", "Mixed"]:
                 parameter["formula"] = 536870912
-            elif enviroment_name == "OLTP":
+            elif environment_name == "OLTP":
                 parameter["formula"] = 1073741824
-            elif enviroment_name == "DW":
+            elif environment_name == "DW":
                 parameter["formula"] = 2147483648
             else:
                 parameter["formula"] = 2147483648
@@ -328,11 +328,11 @@ class TuningHandler(util.DefaultRequestHandler):
                 parameter["name"], "runtime-config-wal.html#GUC-MAX-WAL-SIZE",
                 abstract, default_value)
 
-            if enviroment_name in ["WEB", "Mixed"]:
+            if environment_name in ["WEB", "Mixed"]:
                 parameter["formula"] = 1610612736
-            elif enviroment_name == "OLTP":
+            elif environment_name == "OLTP":
                 parameter["formula"] = 3221225472
-            elif enviroment_name == "DW":
+            elif environment_name == "DW":
                 parameter["formula"] = 6442450944
             else:
                 parameter["formula"] = 1073741824
@@ -359,9 +359,9 @@ class TuningHandler(util.DefaultRequestHandler):
             "runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET",
             abstract, default_value, recomendation_posts)
 
-        if enviroment_name == "WEB":
+        if environment_name == "WEB":
             parameter["formula"] = 0.7
-        elif enviroment_name in ["OLTP", "DW", "Mixed"]:
+        elif environment_name in ["OLTP", "DW", "Mixed"]:
             parameter["formula"] = 0.9
         else:
             parameter["formula"] = 0.5
@@ -384,7 +384,7 @@ class TuningHandler(util.DefaultRequestHandler):
             parameter["name"], "runtime-config-wal.html#GUC-WAL-BUFFERS",
             abstract, default_value)
 
-        if enviroment_name in ["WEB", "OLTP", "DW", "Mixed"]:
+        if environment_name in ["WEB", "OLTP", "DW", "Mixed"]:
             parameter["formula"] = "(TOTAL_RAM / 4 ) * 0.03"
         else:
             parameter["formula"] = "(TOTAL_RAM / 16 ) * 0.03"
@@ -516,7 +516,7 @@ class TuningHandler(util.DefaultRequestHandler):
             ::
 
         """
-        return_data = self._get_rules(self.enviroment_name)
+        return_data = self._get_rules(self.environment_name)
         self.return_output(return_data)
 
     def get_config(self):
@@ -529,7 +529,7 @@ class TuningHandler(util.DefaultRequestHandler):
         Sample URL
             ::
 
-                /v1/tuning/get-config?enviroment_name=WEB&total_ram=8GB&max_connections=200&format=conf
+                /v1/tuning/get-config?environment_name=WEB&total_ram=8GB&max_connections=200&format=conf
             ::
 
         Sample output
@@ -573,7 +573,7 @@ class TuningHandler(util.DefaultRequestHandler):
                         "version": "1.0"
                     },
                     "links": {
-                        "self": "http://api.pgconfig.org/v1/tuning/get-config?enviroment_name=WEB&total_ram=8GB&max_connections=200&format=json"
+                        "self": "http://api.pgconfig.org/v1/tuning/get-config?environment_name=WEB&total_ram=8GB&max_connections=200&format=json"
                     },
                     "meta": {
                         "copyright": "PGConfig API",
@@ -584,7 +584,7 @@ class TuningHandler(util.DefaultRequestHandler):
 
         :param total_ram: Total dedicated of RAM memory of the database server
         :param max_connections: number of maximum espected connections
-        :param enviroment_name: type of enviroment
+        :param environment_name: type of environment
         :param show_doc: show documentation details
         """
         message = self._get_config()
@@ -618,7 +618,7 @@ class TuningHandler(util.DefaultRequestHandler):
         max_connections = self.get_argument("max_connections", 100, True)
 
         if environment_name is None:
-            environment_name = self.enviroment_name
+            environment_name = self.environment_name
 
         if include_pgbadger is None:
             include_pgbadger = self.include_pgbadger
@@ -690,8 +690,8 @@ class TuningHandler(util.DefaultRequestHandler):
             self.get_config()
         elif slug == "get-config-all-environments":
             self.get_config_all_environments()
-        elif slug == "list-enviroments":
-            self.list_enviroments()
+        elif slug == "list-environments":
+            self.list_environments()
         elif slug == "get-rules":
             self.get_rules()
         else:
