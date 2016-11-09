@@ -2,6 +2,10 @@
 
 This project it's API that [pgconfig.org](http://pgconfig.org) uses to calculate the tuning values and stuff.
 
+## Thanks
+
+Thanks to [Chuck Boecking](http://www.chuckboecking.com), by sponsoring this tool. :)
+
 ### How it works
 
 The web interface ([pgconfig.org website](http://pgconfig.org) or just `UI`) access this api on the address [`https://api.pgconfig.org/v1/tuning/get-config`](https://api.pgconfig.org/v1/tuning/get-config).
