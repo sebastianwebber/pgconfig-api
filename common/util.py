@@ -58,21 +58,24 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
             self.write("\n")
 
     def write_alter_system(self, output_data):
+        
+        if float(self.pg_version) <= 9.3:
+            self.write("-- ALTER SYSTEM format it's only supported on version 9.4 and higher. Use 'conf' format instead.")
+        else:
+            if self.show_about is True:
+                self.write_about_stuff()
 
-        if self.show_about is True:
-            self.write_about_stuff()
+            for category in output_data:
+                self.write("-- {}\n".format(category["description"]))
+                for parameter in category["parameters"]:
+                    config_value = parameter.get("config_value", "NI")
 
-        for category in output_data:
-            self.write("-- {}\n".format(category["description"]))
-            for parameter in category["parameters"]:
-                config_value = parameter.get("config_value", "NI")
+                    parameter_comment = parameter.get("comment", "NONE")
+                    self.write_comment("alter_system", parameter_comment)
 
-                parameter_comment = parameter.get("comment", "NONE")
-                self.write_comment("alter_system", parameter_comment)
-
-                self.write("ALTER SYSTEM SET {} TO '{}';\n".format(parameter[
-                    "name"], config_value))
-            self.write("\n")
+                    self.write("ALTER SYSTEM SET {} TO '{}';\n".format(parameter[
+                        "name"], config_value))
+                self.write("\n")
 
     def write_plain(self, message=list()):
         if len(message) == 1:
@@ -146,6 +149,7 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
     def return_output(self, message=list()):
         # default_format=self.get_argument("format", "json", True)
 
+
         # converting string input into a list (for solve issue with multiline strings)
         process_data = []
         if not isinstance(message, list):
@@ -160,7 +164,7 @@ class DefaultRequestHandler(CorsMixin, tornado.web.RequestHandler):
         elif self.default_format == "conf":
             self.write_config(message)
         elif self.default_format == "alter_system":
-            self.write_alter_system(message)
+                self.write_alter_system(message)
         else:
             self.write_plain(message)
 
