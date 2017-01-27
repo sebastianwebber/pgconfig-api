@@ -1,27 +1,52 @@
 #!/usr/bin/env python
 
-#
-# This file may be used instead of Apache mod_wsgi to run your python
-# web application in a different framework.  A few examples are
-# provided (cherrypi, gevent), but this file may be altered to run
-# whatever framework is desired - or a completely customized service.
-#
-
-import tornado.ioloop
-import main
 import os
+import tornado.ioloop
+import tornado.web
+from generators import fdw, pgbadger
+from guides import native_replication
+from advisors import tuning
 
-try:
-    zvirtenv = os.path.join(os.environ['OPENSHIFT_PYTHON_DIR'], 'virtenv',
-                            'bin', 'activate_this.py')
-    execfile(zvirtenv, dict(__file__=zvirtenv))
-except IOError:
-    pass
 
-if __name__ == '__main__':
-    ip = os.environ['OPENSHIFT_PYTHON_IP']
-    port = int(os.environ['OPENSHIFT_PYTHON_PORT'])
-    app = main.MainAPI()
+class IndexHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render('index.html')
 
-    app.application.listen(port, ip)
+
+class MainAPI():
+
+    def __init__(self):
+        self.settings = {
+            "template_path":
+            os.path.join(os.path.dirname(__file__), "templates"),
+            "static_path": os.path.join(os.path.dirname(__file__), "static"),
+            "debug": True,
+            "autoreload": True
+        }
+
+        API_VERSION = 1.0
+        API_PREFIX = "/v1/"
+
+        self.application = tornado.web.Application([
+            (r"/", tornado.web.RedirectHandler, {"url": "/v1"}),
+            (r"/v1", IndexHandler),
+
+            ## Generators
+            (r"/v1/generators/fdw/([^/]+)", fdw.FDWHandler),
+            (r"/v1/generators/pgbadger/([^/]+)", pgbadger.PGBadgerConfigurationHandler),
+
+            ## Guides
+            (r"/v1/guides/native-replication/([^/]+)", native_replication.NativeReplicationHandler),
+
+            ## Tuning
+            (r"/v1/tuning/([^/]+)", tuning.TuningHandler),
+        ], **self.settings)
+
+    def get_app(self):
+        return self.application
+
+
+if __name__ == "__main__":
+    apiApp = MainAPI()
+    apiApp.application.listen(5000)
     tornado.ioloop.IOLoop.current().start()
