@@ -6,8 +6,8 @@ class BashCommand
 
     def build
         resultado = [ "#!/bin/bash"] 
-        puts @instruction.inspect
-        resultado += @instruction["command"]["lines"] if @instruction != nil
+        # puts @instruction.inspect
+        resultado += @instruction["session"].first["instructions"].first["command"]["lines"] if @instruction != nil
         resultado
     end
 end
