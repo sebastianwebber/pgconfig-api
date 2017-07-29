@@ -6,8 +6,11 @@ class BashTemplate
 
     def build
         resultado = [ "#!/bin/bash"] 
-        # puts @instruction.inspect
-        resultado += @instruction["session"].first["instructions"].first["command"]["lines"] if @instruction != nil
+
+        @instruction["session"].each do |detail|
+            resultado += detail["instructions"].first["command"]["lines"]
+        end if @instruction != nil
+
         resultado
     end
 end
