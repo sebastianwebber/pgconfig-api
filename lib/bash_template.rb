@@ -1,4 +1,4 @@
-class BashCommand 
+class BashTemplate 
 
     def initialize instruction = nil
         @instruction = instruction

@@ -1,7 +1,7 @@
 require 'json'
-require_relative '../lib/bash_command'
+require_relative '../lib/bash_template'
 
-RSpec.describe BashCommand, "#build" do
+RSpec.describe BashTemplate, "#build" do
     context "Build the bash lines to compose a script" do 
 
         before(:context) do
@@ -9,15 +9,15 @@ RSpec.describe BashCommand, "#build" do
         end
 
         it "should contains a hash bang at first line" do
-            expect(BashCommand.new(@json_instruction).build.first).to eq("#!/bin/bash")
+            expect(BashTemplate.new(@json_instruction).build.first).to eq("#!/bin/bash")
         end
 
         it "should contains the fstab cat command" do
-            expect(BashCommand.new(@json_instruction).build[1]).to eq("cat /etc/fstab")
+            expect(BashTemplate.new(@json_instruction).build[1]).to eq("cat /etc/fstab")
         end
 
         it "should build bash commands based on instruction" do
-            expect(BashCommand.new(@json_instruction).build.last).to eq("echo ${VARIABLE_XPTO} > /tmp/teste.txt")
+            expect(BashTemplate.new(@json_instruction).build.last).to eq("echo ${VARIABLE_XPTO} > /tmp/teste.txt")
         end
 
     end
