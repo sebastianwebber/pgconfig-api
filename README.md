@@ -18,7 +18,7 @@ $ curl 'https://api.pgconfig.org/v1/tuning/get-config'
 {"data": [{"category": "memory_related","description": "Memory Configuration","parameters": [{"config_value": "512MB","format": "Bytes","name": "shared_buffers"},{"config_value": "2GB","format": "Bytes","name": "effective_cache_size"},{"config_value": "20MB","format": "Bytes","name": "work_mem"},{"config_value": "128MB","format": "Bytes","name": "maintenance_work_mem"}]},{"category": "checkpoint_related","description": "Checkpoint Related Configuration","parameters": [{"config_value": "512MB","format": "Bytes","name": "min_wal_size"},{"config_value": "2GB","format": "Bytes","name": "max_wal_size"},{"config_value": 0.7,"format": "Float","name": "checkpoint_completion_target"},{"config_value": "15MB","format": "Bytes","name": "wal_buffers"}]},{"category": "network_related","description": "Network Related Configuration","parameters": [{"config_value": "*","format": "String","name": "listen_addresses"},{"config_value": 100,"format": "Decimal","name": "max_connections"}]}],"jsonapi": {"version": "1.0"},"links": {"self": "http://api.pgconfig.org/v1/tuning/get-config"},"meta": {"arguments": {},"copyright": "PGConfig API","version": "2.0 beta"}}
 ```
 
-With a litle formating, looks like this:
+With a little formating, looks like this:
 
 ```json
 {  
@@ -158,7 +158,7 @@ ALTER SYSTEM SET listen_addresses TO '*';
 ALTER SYSTEM SET max_connections TO '100';
 ```
 
-In short: to change the output, all you need is to do it's puting the parameters in the URL.
+In short: to change the output, all you need is to do it's put the parameters in the URL.
 
 ### Available parameters
 
