@@ -14,6 +14,7 @@ class TuningHandler(util.DefaultRequestHandler):
                                                  True)
         self.arch = self.get_argument("arch", "x86-64",
                                                  True)
+        self.drive_type = self.get_argument("drive_type", "HDD", True)
         self.show_doc = self.get_argument("show_doc", False, True)
         self.include_pgbadger = self.get_argument("include_pgbadger", None,
                                                   True)
@@ -208,7 +209,7 @@ class TuningHandler(util.DefaultRequestHandler):
         else:
             parameter["formula"] = "((TOTAL_RAM / 6) / MAX_CONNECTIONS)"
 
-        category["parameters"].append(parameter)
+            category["parameters"].append(parameter)
 
         ## maintenance_work_mem
         parameter = {}
@@ -436,6 +437,52 @@ class TuningHandler(util.DefaultRequestHandler):
             default_value)
 
         parameter["formula"] = self.get_argument("max_connections", 100, True)
+
+        category["parameters"].append(parameter)
+
+        return_output.append(category)
+
+        ##### Hard Drive Configuration
+        category = {}
+        category["category"] = "hard_drive_type"
+        category["description"] = "Hard Drive Configuration"
+        category["parameters"] = list()
+
+        ## random_page_cost
+        parameter = {}
+        parameter["name"] = "random_page_cost"
+        parameter["format"] = ParameterFormat.Float
+
+        abstract = "Sets the planner's estimate of the cost of a \
+non-sequentially-fetched disk page."
+        default_value = "4.0"
+
+        parameter["documentation"] = self._define_doc(
+            parameter["name"],
+            "runtime-config-query.html#GUC-RANDOM-PAGE-COST", abstract,
+            default_value)
+
+        values = {"HDD": 4.0, "SSD": 1.1, "NAS": 1.1}
+        parameter["formula"] = values[self.drive_type]
+
+        category["parameters"].append(parameter)
+
+        ## effective_io_concurrency
+        parameter = {}
+        parameter["name"] = "effective_io_concurrency"
+        parameter["format"] = ParameterFormat.Decimal
+
+        abstract = "Sets the number of concurrent disk I/O operations that \
+PostgreSQL expects can be executed simultaneously."
+        default_value = "1"
+
+        parameter["documentation"] = self._define_doc(
+            parameter["name"],
+            "runtime-config-resource.html#GUC-EFFECTIVE-IO-CONCURRENCY",
+            abstract, default_value)
+
+        values = {"HDD": 2, "SSD": 200, "NAS": 300}
+        parameter["formula"] = values[self.drive_type]
 
         category["parameters"].append(parameter)
 
