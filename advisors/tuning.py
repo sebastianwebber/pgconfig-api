@@ -481,7 +481,7 @@ PostgreSQL expects can be executed simultaneously."
             "runtime-config-resource.html#GUC-EFFECTIVE-IO-CONCURRENCY",
             abstract, default_value)
 
-        values = {"HDD": 2, "SSD": 200, "NAS": 300}
+        values = {"HDD": 2, "SSD": 200, "SAN": 300}
         parameter["formula"] = values[self.drive_type]
 
         category["parameters"].append(parameter)
