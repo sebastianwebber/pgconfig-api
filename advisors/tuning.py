@@ -462,7 +462,7 @@ non-sequentially-fetched disk page."
             "runtime-config-query.html#GUC-RANDOM-PAGE-COST", abstract,
             default_value)
 
-        values = {"HDD": 4.0, "SSD": 1.1, "NAS": 1.1}
+        values = {"HDD": 4.0, "SSD": 1.1, "SAN": 1.1}
         parameter["formula"] = values[self.drive_type]
 
         category["parameters"].append(parameter)
