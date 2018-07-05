@@ -12,8 +12,6 @@ services:
       - 8080:8080
     networks:
       - proxy
-    build:
-      context: ./
 
 networks:
   proxy:
