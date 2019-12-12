@@ -1,13 +1,9 @@
 version: '3'
 services:
   webapp:
-    image: pgconfig-api
+    build: .
+    image: sebastianwebber/pgconfig-api
     container_name: api.service
-    labels:
-      - traefik.backend=api
-      - traefik.frontend.rule=Host:api.pgconfig.org
-      - traefik.docker.network=proxy
-      - traefik.port=8080
     ports:
       - 8080:8080
     networks:
@@ -15,4 +11,3 @@ services:
 
 networks:
   proxy:
-    external: true
