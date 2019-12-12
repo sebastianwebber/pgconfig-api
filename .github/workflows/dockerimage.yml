@@ -12,5 +12,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build the Docker image
       run: docker-compose build
+    - name: login at docker hub
+      run: docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password "${{ secrets.DOCKERHUB_PASSWORD }}"
     - name: push changes to dockerhub
       run: docker push sebastianwebber/pgconfig-api
