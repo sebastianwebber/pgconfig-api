@@ -3,4 +3,4 @@ The amount of shared memory used for WAL data that has not yet been written to d
 
 The contents of the WAL buffers are written out to disk at every transaction commit, so extremely large values are unlikely to provide a significant benefit. However, setting this value to at least a few megabytes can improve write performance on a busy server where many clients are committing at once. The auto-tuning selected by the default setting of -1 should give reasonable results in most cases.
 
-Increasing this parameter might cause PostgreSQL to request more System V shared memory than your operating system's default configuration allows. See Section 17.4.1 for information on how to adjust those parameters, if necessary.
+Increasing this parameter might cause PostgreSQL to request more System V shared memory than your operating system's default configuration allows. See sysvipc for information on how to adjust those parameters, if necessary.
