@@ -5,7 +5,7 @@ services:
     image: sebastianwebber/pgconfig-api
     container_name: api.service
     ports:
-      - 8080:8080
+      - 18080:8080
     networks:
       - proxy
 
