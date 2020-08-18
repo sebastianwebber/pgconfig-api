@@ -7,13 +7,13 @@ from common import util, bytes, ParameterFormat
 
 def config_hard_disk(drive_type, define_doc):
     category = {}
-    ##### Hard Drive Configuration
+    # Hard Drive Configuration
     category = {}
-    category["category"] = "hard_drive_type"
-    category["description"] = "Hard Drive Configuration"
+    category["category"] = "storage_type"
+    category["description"] = "Storage Configuration"
     category["parameters"] = list()
 
-    ## random_page_cost
+    # random_page_cost
     parameter = {}
     parameter["name"] = "random_page_cost"
     parameter["format"] = ParameterFormat.Float
@@ -22,17 +22,21 @@ def config_hard_disk(drive_type, define_doc):
 non-sequentially-fetched disk page."
     default_value = "4.0"
 
+    recomendation_posts = {}
+    recomendation_posts[
+        "How a single PostgreSQL config change improved slow query performance by 50x"] = "https://amplitude.engineering/how-a-single-postgresql-config-change-improved-slow-query-performance-by-50x-85593b8991b0"
+
     parameter["documentation"] = define_doc(
         parameter["name"],
         "runtime-config-query.html#GUC-RANDOM-PAGE-COST", abstract,
-        default_value)
+        default_value, recomendation_posts)
 
     values = {"HDD": 4.0, "SSD": 1.1, "SAN": 1.1}
     parameter["formula"] = values[drive_type]
 
     category["parameters"].append(parameter)
 
-    ## effective_io_concurrency
+    # effective_io_concurrency
     parameter = {}
     parameter["name"] = "effective_io_concurrency"
     parameter["format"] = ParameterFormat.Decimal
@@ -41,10 +45,15 @@ non-sequentially-fetched disk page."
 PostgreSQL expects can be executed simultaneously."
     default_value = "1"
 
+    recomendation_posts = {}
+    recomendation_posts[
+        "PostgreSQL: effective_io_concurrency benchmarked"] = "https://portavita.github.io/2019-07-19-PostgreSQL_effective_io_concurrency_benchmarked/"
+
+
     parameter["documentation"] = define_doc(
         parameter["name"],
         "runtime-config-resource.html#GUC-EFFECTIVE-IO-CONCURRENCY",
-        abstract, default_value)
+        abstract, default_value, recomendation_posts)
 
     values = {"HDD": 2, "SSD": 200, "SAN": 300}
     parameter["formula"] = values[drive_type]
@@ -53,13 +62,14 @@ PostgreSQL expects can be executed simultaneously."
 
     return category
 
+
 def config_worker_process(pg_version, cpus, define_doc):
     category = {}
 
     if cpus < 0:
         return category
 
-    #### Worker Processes
+    # Worker Processes
     if float(pg_version) >= 9.5:
         category["category"] = "worker_processes"
         category["description"] = "Worker Processes"
@@ -114,6 +124,5 @@ can support for parallel queries."
 
             parameter["formula"] = cpus
             category["parameters"].append(parameter)
-
 
     return category

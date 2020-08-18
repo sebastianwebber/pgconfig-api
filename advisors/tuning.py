@@ -137,7 +137,7 @@ class TuningHandler(util.DefaultRequestHandler):
         recomendation_posts[
             "Tuning shared_buffers and wal_buffers"] = "http://rhaas.blogspot.com.br/2012/03/tuning-sharedbuffers-and-walbuffers.html"
 
-        abstract = "This parameter allocate memory slots, used by all process. Mainly works as the disk cache and its similar to oracle's SGA buffer."
+        abstract = "This parameter allocate memory slots used by all process when the database starts. Mainly works as the disk cache and its similar to oracle's SGA buffer."
         default_value = ""
 
         if float(self.pg_version) in (9.1, 9.2):
@@ -170,10 +170,17 @@ class TuningHandler(util.DefaultRequestHandler):
         elif float(self.pg_version) >= 9.4:
             default_value = "4GB"
 
+
+        recomendation_posts = {}
+        recomendation_posts[
+            "effective_cache_size: What it means in PostgreSQL"] = "https://www.cybertec-postgresql.com/en/effective_cache_size-what-it-means-in-postgresql/"
+        recomendation_posts[
+            "effective_cache_size: A practical example"] = "https://www.cybertec-postgresql.com/en/effective_cache_size-a-practical-example/"
+
         parameter["documentation"] = self._define_doc(
             parameter["name"],
             "runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE", abstract,
-            default_value)
+            default_value,recomendation_posts)
 
         if environment_name == "Desktop":
             parameter["formula"] = "TOTAL_RAM / 4"
@@ -199,6 +206,10 @@ class TuningHandler(util.DefaultRequestHandler):
         recomendation_posts = {}
         recomendation_posts[
             "Understaning postgresql.conf: WORK_MEM"] = "https://www.depesz.com/2011/07/03/understanding-postgresql-conf-work_mem/"
+        recomendation_posts[
+            "Configuring work_mem in Postgres"] = "https://www.pgmustard.com/blog/work-mem"
+
+            
 
         parameter["documentation"] = self._define_doc(
             parameter["name"], "runtime-config-resource.html#GUC-WORK-MEM",
@@ -222,6 +233,14 @@ class TuningHandler(util.DefaultRequestHandler):
         abstract = "This parameter defines how much a maintenance operation (ALTER TABLE, VACUUM, REINDEX, AutoVACUUM worker, etc) buffer can use."
         default_value = ""
 
+        
+
+        recomendation_posts = {}
+        recomendation_posts[
+            "How Much maintenance_work_mem Do I Need?"] = "http://rhaas.blogspot.com/2019/01/how-much-maintenanceworkmem-do-i-need.html"
+        recomendation_posts[
+            "Adjusting maintenance_work_mem"] = "https://www.cybertec-postgresql.com/en/adjusting-maintenance_work_mem/"
+
         if float(self.pg_version) >= 9.1 and float(self.pg_version) <= 9.3:
             default_value = "16MB"
         elif float(self.pg_version) >= 9.4:
@@ -230,7 +249,7 @@ class TuningHandler(util.DefaultRequestHandler):
         parameter["documentation"] = self._define_doc(
             parameter["name"],
             "runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM", abstract,
-            default_value)
+            default_value, recomendation_posts)
 
         if environment_name == "DW":
             parameter["formula"] = "(TOTAL_RAM / 8)"
@@ -380,12 +399,18 @@ class TuningHandler(util.DefaultRequestHandler):
         abstract = "This parameter defines a buffer to store WAL changes before write it in the WAL file."
         default_value = ""
 
+        recomendation_posts = {}
+        recomendation_posts[
+            "Chapter 9 - Write Ahead Logging — WAL"] = "http://www.interdb.jp/pg/pgsql09.html"
+
+        
+
         if float(self.pg_version) >= 9.1:
             default_value = "3% of shared_buffers or 64KB at the minimum"
 
         parameter["documentation"] = self._define_doc(
             parameter["name"], "runtime-config-wal.html#GUC-WAL-BUFFERS",
-            abstract, default_value)
+            abstract, default_value, recomendation_posts)
 
         if environment_name in ["WEB", "OLTP", "DW", "Mixed"]:
             parameter["formula"] = "(TOTAL_RAM / 4 ) * 0.03"
@@ -430,13 +455,20 @@ class TuningHandler(util.DefaultRequestHandler):
         abstract = "This parameter defines a max connections allowed."
         default_value = ""
 
+
+        recomendation_posts = {}
+        recomendation_posts[
+            "Tuning max_connections in PostgreSQL"] = "https://www.cybertec-postgresql.com/en/tuning-max_connections-in-postgresql/"
+
+        
+
         if float(self.pg_version) >= 9.1:
             default_value = "100"
 
         parameter["documentation"] = self._define_doc(
             parameter["name"],
             "runtime-config-connection.html#GUC-MAX-CONNECTIONS", abstract,
-            default_value)
+            default_value, recomendation_posts)
 
         parameter["formula"] = self.get_argument("max_connections", 100, True)
 
@@ -608,6 +640,9 @@ class TuningHandler(util.DefaultRequestHandler):
             self.write_json_api(message)
 
     def get_config_all_environments(self):
+        self.write_json_api(self._get_config_all_environments())
+
+    def get_config_all_environments_vue(self):
         self.write_json_api(self._get_config_all_environments())
 
     def _get_config_all_environments(self):
