@@ -124,11 +124,13 @@ class TuningHandler(util.DefaultRequestHandler):
         parameter = {}
         parameter["name"] = "shared_buffers"
 
-
-        if self.os_type == "Windows":
-            parameter["max_value"] = self.set_max_value("512MB")
-        else:
+        if float(self.pg_version) <= 9.5:
             parameter["max_value"] = self.set_max_value("8GB")
+
+        if self.os_type == "windows":
+            if float(self.pg_version) < 10.0:
+                parameter["max_value"] = self.set_max_value("512MB")
+
         parameter["format"] = ParameterFormat.Bytes
 
         recomendation_posts = {}
@@ -685,6 +687,7 @@ class TuningHandler(util.DefaultRequestHandler):
 
                     config_value = eval(str(formula))
 
+
                     min_value = parameter.get("min_value", config_value)
                     max_value = parameter.get("max_value", config_value)
 
@@ -711,7 +714,7 @@ class TuningHandler(util.DefaultRequestHandler):
                     parameter["config_value"] = parameter["formula"]
 
                 parameter.pop("doc_url", None)
-                parameter.pop("formula", None)
+                # parameter.pop("formula", None)
                 parameter.pop("max_value", None)
                 parameter.pop("min_value", None)
                 # parameter.pop("format", None)
